@@ -1,6 +1,5 @@
 class FacilitiesController < ApplicationController
   def index
-    render 'devise/registrations/new'
   end
 
   def create

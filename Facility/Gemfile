@@ -52,4 +52,10 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-gem 'devise'
+
+# for login bar
+gem 'sticky-rails'
+gem 'bootstrap', '~>4.0.0.alpha6'
+
+gem 'rack-openid', github: 'david50407/rack-openid'
+gem 'omniauth-ncu-portal-openid', :github => 'david50407/omniauth-ncu-portal-openid'

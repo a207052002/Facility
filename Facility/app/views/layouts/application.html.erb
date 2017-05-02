@@ -1,14 +1,49 @@
 <!DOCTYPE html>
+<% content_for :logined do %>
+  <ul class="navbar-nav ml-auto p-5">
+  <li class="nav-item dropdown">
+  <a class="btn btn-outline-warning dropdown-toggle" href="#" id="logmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #444444; font-size: 3vh;  font-weight: 600; border-radius:4px; border:0px; padding: 1vh;" >LogTool</a>
+    <div class="dropdown-menu" aria-labelledby="logmenu">
+    <a class="dropdown-item" href="http://140.115.3.105:3000/logout">Logout</a>
+    </div>
+  </li>
+  </ul>
+<% end %>
+<% content_for :unauth do%>
+  <ul class="nav navbar-nav ml-auto p-5">
+      <li class="nav-item">
+        <a class="btn btn-outline-secondary" href="http://140.115.3.105:3000/login" style="color:#999999; font-size:3vh; font-weight:600; border-radius:2px; border:0px; padding:1vh;">Login</a>
+      </li>
+    </ul>
+<% end %>
 <html>
   <head>
     <title>Facility</title>
     <%= csrf_meta_tags %>
-
+    <style>
+      body {
+        position: relative;
+          padding: 0 3vw;
+      }
+    </style>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#navscroll">
+    <nav id="navscroll" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" style="height:10vh;">
+      <a class="nav-link" href="#home" style="font-weight:750; font-size:4vh; color:#FFFFFF">NCU Register</a>
+        <ul class="navbar-nav nav-pills mr-auto">
+          <li><a class="nav-link" href="#list">List </a></li>
+          <li><a class="nav-link" href="#admin">Admin</a></li>
+          <li><a class="nav-link" href="#create"> New </a></li>
+        </ul>
+      <% if current_user.nil? %>
+        <%= yield :unauth %>
+      <% else %>
+         <%= yield :logined%>
+       <% end %>
+    </nav>
     <%= yield %>
   </body>
 </html>

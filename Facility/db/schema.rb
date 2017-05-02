@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170413083743) do
+ActiveRecord::Schema.define(version: 20170411075802) do
+
+  create_table "allow_user", force: :cascade do |t|
+    t.string  "portal_id"
+    t.integer "facility_id"
+    t.index ["facility_id"], name: "index_allow_user_on_facility_id"
+  end
 
   create_table "facilities", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
+    t.string  "name",                        null: false
+    t.string  "description",                 null: false
+    t.boolean "limit",       default: false, null: false
+    t.boolean "verify",      default: false, null: false
   end
 
   create_table "facilities_users", force: :cascade do |t|
@@ -25,31 +33,19 @@ ActiveRecord::Schema.define(version: 20170413083743) do
   end
 
   create_table "use_times", force: :cascade do |t|
-    t.string   "period"
-    t.datetime "day"
+    t.string   "period",                      null: false
+    t.datetime "day",                         null: false
     t.datetime "created_at"
-    t.string   "user_id"
-    t.string   "description"
+    t.integer  "user_id"
+    t.string   "description", default: "",    null: false
     t.integer  "facility_id"
+    t.boolean  "verified",    default: false
     t.index ["facility_id"], name: "index_use_times_on_facility_id"
+    t.index ["user_id"], name: "index_use_times_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  default: "",       null: false
-    t.string   "encrypted_password",     default: "",       null: false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,        null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
-    t.string   "role",                   default: "normal", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.string "portal_id", null: false
   end
 
 end

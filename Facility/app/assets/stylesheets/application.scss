@@ -10,6 +10,14 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
- *= require_self
  */
+@import "bootstrap";
+.btn {
+  box-shadow: 5px 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.navbar {
+  box-shadow: 5px 5px 5px #999;
+  moz-box-shadow: 5px 5px 5px #999;
+  webkit-box-shadow: 5px 5px 5px #999;
+}
