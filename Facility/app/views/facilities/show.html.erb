@@ -1,0 +1,423 @@
+<div class="container" style="padding-top: 25px;">
+  <% pass = 'style="background-color: #DDFFDD"' %>
+  <% review = 'style="background-color: #FFDDDD"' %>
+  <% facility = Facility.find_by(id: params[:id]) %>
+  <% facility_verify = facility.verify %>
+  <p><h1><%= facility.name %></h1><h4>&nbsp;&nbsp;<%= facility.description %></h4></p>
+  <div class="container" style="display: inline-block;">
+    <div style="display: inline-block;">
+      <label>Month</label>
+      <select class="form-control" id="findMonth" name="findMonth">
+        <% for i in 1..12 %>
+          <option id="<%=raw i %>"><%=raw i %></option>
+        <% end %>
+      </select>
+    </div>
+    <div style="display: inline-block;">
+      <label>Day</label>
+      <select class="form-control" id="findDay" name="findDay">
+        <% for i in 1..31 %>
+          <option id="<%=raw i %>"><%=raw i %></option>
+        <% end %>
+      </select>
+    </div>
+    <button id="findTable" class="btn btn-secondary" style="display: inline-block;" >Find</button>
+  </div>
+
+  <nav class="tcenter">
+    <ul class="pager nav navbar-left nav-tabs" style="display: inline-block;">
+      <li><a class="btn last" data-toggle="tab" >LastWeek</a></li>
+    </ul>
+    <ul style="display: inline-block;"><li style="list-style-type: none;"><span style="font-size:40px"><%='Week' %></span></li></ul>
+    <ul class="pager nav navbar-right nav-tabs" style="display: inline-block;">
+      <li><a class="btn next" data-toggle="tab" >NextWeek</a></li>
+    </ul>
+  </nav>
+  <div id="weekTable">
+    <% wday = DateTime.now.cwday %>
+    <% year = DateTime.now.year %>
+    <% month = DateTime.now.month %>
+    <% day = DateTime.now.day %>
+    <% data_day = DateTime.new(year, month, day)%>
+    <% i = 0 %>
+    <div id="week">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th></th>
+            <th style="text-align:center;"><%= (d1 = data_day.next_day(1-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d2 = data_day.next_day(2-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d3 = data_day.next_day(3-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d4 = data_day.next_day(4-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d5 = data_day.next_day(5-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d6 = data_day.next_day(6-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d7 = data_day.next_day(7-wday)).strftime("%m/%d") %></th>
+          </tr>
+          <tr>
+            <th></th>
+            <th style="text-align:center;">Monday</th>
+            <th style="text-align:center;">Tuesday</th>
+            <th style="text-align:center;">Wedsday</th>
+            <th style="text-align:center;">Thursday</th>
+            <th style="text-align:center;">Friday</th>
+            <th style="text-align:center;">Saturday</th>
+            <th style="text-align:center;">Sunday</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for j in 1..15 %>
+            <% k = j.to_s%>
+            <tr>
+              <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day1 = facility.rents.where(day: d1, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d1, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day1.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day1.first.user_id if day1.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==2%>" data-wday="<%=d2.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day2 = facility.rents.where(day: d2, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d2, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day2.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day2.first.user_id if day2.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==3%>" data-wday="<%=d3.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day3 = facility.rents.where(day: d3, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d3, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day3.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day3.first.user_id if day3.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==4%>" data-wday="<%=d4.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day4 = facility.rents.where(day: d4, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d4, period: j, verified: true).nil? && facility_verify %>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day4.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day4.first.user_id if day4.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==5%>" data-wday="<%=d5.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day5 = facility.rents.where(day: d5, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d5, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day5.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day5.first.user_id if day5.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==6%>" data-wday="<%=d6.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day6 = facility.rents.where(day: d6, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d6, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day6.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day6.first.user_id if day6.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==7%>" data-wday="<%=d7.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day7 = facility.rents.where(day: d7, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d7, period: j, verified: true).nil? && facility.verify %>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day7.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day7.first.user_id if day7.first.present? %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="rent">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Rent form</h4>
+      </div>
+      <div class="modal-body">
+        <p id="user" class="well"></p>
+        <%= form_tag('/facilities/' + params[:id].to_s + '/rent', method: :post) do %>
+          <div class="input-group">
+            <label for="day"><b>Day</b></label>
+            <input type="text" class="form-control" id="day" name="day" value=""></input>
+          </div>
+          <div class="input-group">
+            <span><b>Time</b></span>
+            <select class="form-control" id="period" name="period">
+              <% for i in 1..15 %>
+                <option <%=raw 'id=' + '"' + i.to_s + '"' %>><%= i.to_s(16).upcase %></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="des">Despriction</label>
+            <textarea class="form-control" placeholder="Simple description about usage..." type="text" name="description" rows="5" id="des"></textarea>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" id="largerent" name="largerent" value="true">Large rent</input></label>
+          </div>
+          <div class="input-group">
+            <label>Continueously rent(Max 18 weeks)</label>
+            <input type="text" name="rentweeks" class="form-control" ></input>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="infomation" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Information</h4>
+      </div>
+      <div class="modal-body">
+        <h4 id="renter">I hate JS</h4>
+        <h4 id="reason">YES</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="rentchange" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Rent change</h4>
+      </div>
+      <div class="modal-body">
+        <p id="user" class="well"><%= current_user%></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="board" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title"><%= facility.name %></h4>
+      </div>
+      <div class="modal-body">
+        <% if(facility.board!="" && !facility.board.nil?) %>
+          <h5><%= facility.board %></h5>
+        <% else %>
+          <h5>No announcement</h5>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<% if facility.verify %>
+  <script>
+var verify = "true"
+  </script>
+<% else %>
+  <script>
+var verify = "false"
+  </script>
+<% end %>
+
+<script>
+<% if !current_user.nil? %>
+    <%   login = '"' + current_user + '"' %>
+<% else %>
+    <%   login = '""' %>
+<% end %>
+  <%=raw 'alert("You can not rent the past.")' if flash[:notice]=='past'  %>
+  window.verify = false
+  <%=raw 'window.verify=true' if facility.verify%>
+
+  var login = <%=raw login%>
+window.currentLogin = <%=raw login %>
+window.globalVar="null"
+window.facilityId = <%=raw params[:id] %>
+window.week = 0
+var stime = "null"
+$(document).on('turbolinks:load', function(){
+  $('#findTable').click(
+    function(){
+      var month = $("#findMonth").val();
+      var day = $("#findDay").val();
+      var theDate = {month: month, day: day};
+      var id = window.facilityId;
+      $.ajax(id + "/table", {success: function(response){
+        $('#weekTable').html(response);
+      }, data: theDate})
+    }
+  );
+
+  $(document).on({
+    mouseenter: function() {
+      var me = $(this)
+      function origin(callback){
+        window.origin = me.css('background-color')
+        callback('background-color', '#CCCCCC')
+      }
+      origin(function(){
+        me.css('background-color','#CCCCCC')
+      })
+    },
+    mouseleave: function() {$(this).css('background-color',window.origin);}
+  },'.clickcell');
+
+  $(document).on('click', '.clickcell',
+    function() {
+      if($(this).data('rented')==true && $(this).data('rented')!='review'){
+        var entity = $(this)
+         var reg = /\s*(\S*)\s*/g
+         var match = reg.exec($(this).text())
+        if(window.currentLogin == match[1]){
+          $('#rentchange').modal('show')
+        }else{
+          alert('You can not change the rent.')
+        }
+      }
+      else if($(this).data('rented') == 'review'){
+      }
+      else if(login != ""){
+        var wday = $(this).data('wday')
+        var time = $(this).data('time')
+        function f1(time){
+          console.log($('#period').children(window.globalVar).prop("selected",false))
+        }
+        function f2(time){
+          window.globalVar = '#' +  time;
+        }
+        function f3(time){
+          console.log($('#period').children(window.globalVar).prop("selected",true))
+        }
+        var callbacks = $.Callbacks();
+        callbacks.add(f1)
+        callbacks.add(f2)
+        callbacks.add(f3)
+        callbacks.fire($(this).data('time'))
+        $("#user").text("Current user: " + login);
+        $("#day").val(wday)
+        $("#time").val(time)
+        $('#rent').modal('show')
+      }
+      else{
+        alert("Please login first.");
+      }
+    });
+
+  <% if params[:notice].nil?%>
+      $('#board').modal('show')
+  <% end %>
+
+  $(document).on('click', '.next',
+    function() {
+      window.week = window.week + 1
+      let theDate = { "week" : window.week}
+      $.ajax(window.facilityId + "/table", {success: function(response){
+        window.res = response
+        $('#weekTable').fadeOut("fast", function(){
+          $('#weekTable').html(window.res).promise().done(
+            $("#weekTable").fadeIn("slow")
+          );
+        });
+      }, data: theDate})
+    }
+  )
+  $(document).on('click', '.last',
+    function() {
+      window.week = window.week - 1
+      let theDate = { "week" : window.week}
+      $.ajax(window.facilityId + "/table", {success: function(response){
+        window.res = response
+        $('#weekTable').fadeOut("fast", function(){
+          $('#weekTable').html(window.res).promise().done(
+            $("#weekTable").fadeIn("slow")
+          );
+        });
+      }, data: theDate})
+    }
+  )
+  $(document).on('click', '#queue',
+    function(){
+      $.post(window.facilityId + '/rent', {day : $(this).data('day'), period : $(this).data('time'), description : ""}).done(function(){
+        alert('Submit successed')
+        location.reload()})
+    }
+  )
+})
+  <% if(params[:notice] == 'failed') %>
+    <script>
+      function(){alert("Please don't fuck me")}()
+    </script>
+  <% end %>
+</script>
+

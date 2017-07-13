@@ -1,0 +1,152 @@
+<% facility = Facility.find_by(id: params[:id]) %>
+<% facility_verify = facility.verify %>
+<% wday = DateTime.now.cwday %>
+<% year = DateTime.now.year %>
+<% month = DateTime.now.month %>
+<% day = DateTime.now.day %>
+<% if params[:week].present? %>
+    <% i = params[:week].to_i * 7 %>
+    <% data_day = DateTime.new(year, month, day).next_day(i) %>
+<% else %>
+  <% data_day = DateTime.new(year, params[:month].to_i, params[:day].to_i) %>
+<% end %>
+<% i = 0 %>
+    <div id="week">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th></th>
+            <th style="text-align:center;"><%= (d1 = data_day.next_day(1-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d2 = data_day.next_day(2-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d3 = data_day.next_day(3-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d4 = data_day.next_day(4-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d5 = data_day.next_day(5-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d6 = data_day.next_day(6-wday)).strftime("%m/%d") %></th>
+            <th style="text-align:center;"><%= (d7 = data_day.next_day(7-wday)).strftime("%m/%d") %></th>
+          </tr>
+          <tr>
+            <th></th>
+            <th style="text-align:center;">Monday</th>
+            <th style="text-align:center;">Tuesday</th>
+            <th style="text-align:center;">Wedsday</th>
+            <th style="text-align:center;">Thursday</th>
+            <th style="text-align:center;">Friday</th>
+            <th style="text-align:center;">Saturday</th>
+            <th style="text-align:center;">Sunday</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for j in 1..15 %>
+            <% k = j.to_s%>
+            <tr>
+              <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day1 = facility.rents.where(day: d1, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d1, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day1.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day1.first.user_id if day1.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==2%>" data-wday="<%=d2.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day2 = facility.rents.where(day: d2, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d2, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day2.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day2.first.user_id if day2.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==3%>" data-wday="<%=d3.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day3 = facility.rents.where(day: d3, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d3, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day3.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day3.first.user_id if day3.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==4%>" data-wday="<%=d4.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day4 = facility.rents.where(day: d4, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d4, period: j, verified: true).nil? && facility_verify %>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day4.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day4.first.user_id if day4.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==5%>" data-wday="<%=d5.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day5 = facility.rents.where(day: d5, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d5, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day5.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day5.first.user_id if day5.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==6%>" data-wday="<%=d6.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day6 = facility.rents.where(day: d6, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d6, period: j, verified: true).nil? && facility_verify%>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day6.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day6.first.user_id if day6.first.present? %>
+                <% end %>
+              </td>
+              <td class="clickcell open-Rent <%=raw'tablebg' if wday==7%>" data-wday="<%=d7.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
+                <% if (day7 = facility.rents.where(day: d7, period: j)).present?%>
+                  <% if facility.rents.find_by(day: d7, period: j, verified: true).nil? && facility.verify %>
+                    data-rented="review" style="background-color: #FFAAAA"
+                  <% else %>
+                    data-rented="true" style="background-color: #AAFFAA"
+                  <% end %>
+                <% end %>
+                >
+                <% if (rent =day7.find_by(verified: true)).present? %>
+                  <%= rent.user_id %>
+                <% else %>
+                  <%= day7.first.user_id if day7.first.present? %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>

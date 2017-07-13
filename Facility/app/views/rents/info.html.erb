@@ -1,0 +1,42 @@
+<% facility = Facility.find_by(id: params[:id]) %>
+<% reg = /^(.*)\/(.*)\/(.*)/ %>
+<% the_day = DateTime.new(params[:day][reg,1].to_i, params[:day][reg,2].to_i, params[:day][reg,3].to_i) %>
+<% rents = facility.rents.where(day: the_day, period: params[:time].to_i)  %>
+
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title">Information</h4>
+    </div>
+    <div class="modal-body">
+      <h4>The period is reviewing.</h4>
+      <h5>Day: <%= the_day.strftime("%Y/%m/%d") %></h5>
+      <h5>Period: <%= params[:time].to_i.to_s(16) %></h5>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>User</th>
+            <th>Description</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rents.each do |d| %>
+            <tr>
+              <th><%=d.id%></th>
+              <td><%=d.user_id%></td>
+              <td><%=d.description%></td>
+              <td><%=d.created_at%></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button typr="button" class="btn btn-default" id="queue" data-day="<%=raw the_day.strftime("%Y/%m/%d")%>" data-time="<%=raw params[:time] %>">Submit</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>

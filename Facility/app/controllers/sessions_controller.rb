@@ -7,13 +7,13 @@ class SessionsController < ApplicationController
   def logout
     reset_session
     session.delete :user_id
-
-    redirect_to('https://portal.ncu.edu.tw/logout')
+    redirect_to '/facilities', notice: 'out'
   end
 
   def create
     User.find_or_create_by(portal_id: portal_id)
     session['user_id'] = portal_id
+    $stderr.puts request.env['omniauth.auth'].info['user_roles']
     redirect_to('/facilities')
   end
 

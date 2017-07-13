@@ -1,8 +1,13 @@
 Rails.application.routes.draw do
   resources :facilities
-  post '/facilities/:id/rent' => "rent#new"
-  put '/facilities/:id/rent' =>  "rent#update"
-  delete '/facilities/:id/rent' => "rent#destory"
+  post '/facilities/:id/rent' => "rents#new"
+  put '/facilities/:id/rent/:rent_id' =>  "rents#update"
+  delete '/facilities/:id/rent/:rent_id' => "rents#destory"
+  get '/facilities/:id/rent' => "rents#info"
+  get '/facilities/:id/table' => "facilities#table"
+  get '/facilities/:id/edit/more' => "facilities#more"
+  put '/facilities/:id/edit/more' => "facilities#more_edit"
+  delete '/facilities/:id/edit/more' => "facilities#more_delete"
 
   match 'auth/ncu_portal_open_id/callback', to: 'sessions#create', via: [:get, :post]
   get 'login' => "sessions#login"

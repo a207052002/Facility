@@ -1,0 +1,118 @@
+<% facility = Facility.find_by(id: params[:id])%>
+
+<div class="tab-content" style="padding-top: 50px;">
+
+  <div class="tab-pane fade in active" id="addAdm">
+    <div class="input-group" id="admlist">
+      <label>Add administrators</label>
+      <div class="container" style="display: inline">
+        <div class="container" style="height: 70vh; overflow: auto;">
+          <ul id="displayadmin" class="list-group" style="width: 30vw;">
+            <li class="list-group-item list-group-item-info">Current adm(id)</li>
+            <% facility.users.each do |p|%>
+              <li class="list-group-item clearfix" data-sid="<%=raw p.portal_id %>" data-model="admin"><font><%= p.portal_id%></font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">Delete</button></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <input type="text" id="admin" name="person"></input>
+      <button class="btn buttonadd" data-model="admin">Add</button>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="addMember">
+    <div class="input-group" id="memberlist">
+      <label>Add members (Only effective with membership)</label>
+      <div class="container" style="display: inline">
+        <div class="container" style="height: 70vh; overflow: auto;">
+          <ul id="displaymember" class="list-group" style="width: 30vw;">
+            <li class="list-group-item list-group-item-info">Current members(id)</li>
+            <% facility.allow_users.each do |p|%>
+              <li class="list-group-item clearfix" data-sid="<%=raw p.portal_id %>" data-model="member"><font><%= p.portal_id%></font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">Delete</button></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <input type="text" id="member" name="person"></input>
+      <button class="btn buttonadd" data-model="member">Add</button>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="changeDescription">
+  <%= form_tag '/facilities/'+params[:id]+'/edit/more' ,method: :put do%>
+    <%= hidden_field_tag 'more', 'description' %>
+    <div class="form-group" >
+      <label>Change Description</label>
+      <div class="container" style="display: inline;">
+        <div style="width: 40vw ;">
+          <textarea class="form-control" rows="6" placeholder="<%= facility.description%>" name="content"></textarea>
+          <br>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  </div>
+</div>
+
+<% content_for :more do %>
+  <ul class="nav navbar-nav nav-pills navbar-btn">
+    <li class="active"><a data-toggle="tab" class="active" href="#addAdm">AddAdm</a></li>
+    <li><a data-toggle="tab" href="#addMember">AddMember</a></li>
+    <li><a id="destab" data-toggle="tab" href="#changeDescription">ChangeDescription</a></li>
+  </ul>
+<% end %>
+
+<script>
+$(document).on('turbolinks:load', function(){
+
+  <% if flash[:notice]=='description changed' %>
+    $('#destab').trigger('click')
+    alert('Description has changed.')
+  <% end %>
+
+
+  $(document).on('click', '.self-delete', function(){
+    var bar = $(this).parent()
+    $.ajax({
+      type: "DELETE",
+      url: "/facilities/" +<%=raw "'"+ params[:id] +"'" %>+"/edit/more?authenticity_token="+$('meta[name=csrf-token]').attr('content') + "&content=" + bar.data('sid') + "&more=" + bar.data('model'),
+      success: function(){
+        bar.fadeOut().promise().done(function(){
+          bar.remove()
+        })
+      },
+      error: function(){
+        alert('Internet error.')
+      }
+    })
+  })
+
+
+    $('.buttonadd').click(
+      function(){
+        var model = $(this).data('model')
+        var id = $('#'+model).val()
+        if(id.length > 5){
+          $.ajax({type: "PUT",
+            url: "/facilities/" + <%=raw "'" + params[:id] + "'" %> + "/edit/more",
+            data: {authenticity_token : $('meta[name=csrf-token]').attr('content')
+                  ,more : model
+                  ,content : id},
+            success: function(){
+              $(liststring(id)).hide().appendTo('#display'+model).fadeIn()
+              $('#'+model).val('')
+            },
+            error: function(){
+              alert('Internet error')
+            }
+          })
+        }
+      }
+    )
+  })
+
+  function liststring(sid){
+    return '<li class="list-group-item clearfix" data-sid="'+sid+ '"><font>'+ sid + '</font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">Delete</button></li>'
+  }
+</script>

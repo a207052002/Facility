@@ -1,0 +1,98 @@
+
+
+<div id="list" data-spy="scroll" data-target="#scroll" style="height:11vh"></div>
+<div id="list" data-spy="scroll" data-target="#scroll" style="width:90vw; height:88vh;">
+  <p style="font-size:3vw">Facilities List</p>
+  <table class="table clickable" style="width:100%; max-height:100%;">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Verification</th>
+      <th>MemberLimit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td class="click">Mark</td>
+      <td class="click">Otto</td>
+      <td class="click">@mdo</td>
+      <td class="click">@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td class="click">Jacob</td>
+      <td class="click">Thornton</td>
+      <td class="click">fat</td>
+      <td class="click">@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td class="click">Larry the Bird</td>
+      <td class="click">@twitter</td>
+      <td class="click">@mdo</td>
+      <td class="click">@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">4</th>
+      <td class="click">Larry the Bird</td>
+      <td class="click">@twitter</td>
+      <td class="click">@mdo</td>
+      <td class="click">@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">5</th>
+      <td class="click">Larry the Bird</td>
+      <td class="click">@twitter</td>
+      <td class="click">@mdo</td>
+      <td class="click">@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">6</th>
+      <td class="click">Larry the Bird</td>
+      <td class="click">@twitter</td>
+      <td class="click">@mdo</td>
+      <td class="click">@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">7</th>
+      <td class="click">Larry the Bird</td>
+      <td class="click">@twitter</td>
+      <td class="click">@mdo</td>
+      <td class="click">@mdo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div id="admin" data-spy="scroll" data-target="#scroll" style="height:11vh"></div>
+<div id="admin" data-spy="scroll" data-target="#scroll"  style="width:90vw; height:88vh; font-size:3vw;">
+  <p>Administration List</p>
+  <h4>Yeah! Nothing here!</h4>
+</div>
+<div id="create" data-spy="scroll" data-target="#scroll" style="height:11vh"></div>
+<div id="create" data-spy="scroll" data-target="#scroll"  style="width:90vw; height:90vh; font-size:3vw;">
+  <p>New Facilities</p>
+  <h4>Yeah! Nothing here!</h4>
+</div>
+
+<% content_for :index do %>
+  <ul class="nav navbar-nav nav-pills navbar-btn">
+    <li><a class="active" href="#list">List </a></li>
+    <li><a href="#admin">Admin</a></li>
+    <li><a href="#create"> New </a></li>
+  </ul>
+<% end %>
+
+<% if flash[:notice].present? %>
+  <%=render 'logout' %>
+  <script>
+$(document).on('turbolinks:load', function(){
+  $('#logout').modal('show');
+  $('a#logout-portal-link').click(function() {
+    $('#logout').modal('hide');
+  });
+})
+  </script>
+<% end %>

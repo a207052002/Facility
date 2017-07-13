@@ -1,0 +1,86 @@
+<% facility = Facility.find_by(id: params[:id]) %>
+<% pre_day = '0' %>
+<% pre_period = '0' %>
+<% one_rents = []%>
+<% rents = facility.rents.order(:day).order(:period).order(:created_at) %>
+<% hash = {} %>
+<% pre_day = 0 %>
+<% pre_period = 0 %>
+<% rents.each do |d|%>
+  <%  if(pre_day == d.day && pre_period == d.period) %>
+    <%  hash[d.day][d.period].push d %>
+  <% else %>
+    <% hash.merge!({d.day=> {d.period=> [d]}}) %>
+  <% end %>
+  <% pre_day = d.day %>
+  <% pre_period = d.period %>
+<% end %>
+
+<div class="modal-dialog" style="overflow-y: initial;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title"><%= facility.name %></h4>
+    </div>
+    <div class="modal-body" style="height: 60vh; overflow-y: auto;">
+      <h4>Review</h4>
+          <% count = 0 %>
+          <% hash.each do |day, period| %>
+            <% period.each do |p,d| %>
+              <% if d.first.day > DateTime.now-2%>
+              <h4>Day: <%= d.first.day.strftime("%Y/%m/%d")%> Period: <%= d.first.period%></h4>
+              <table class="table"><tbody>
+                <% d.each do |t| %>
+                  <tr id="rent<%=raw t.id %>" <%=raw 'style="background-color: #BBFFBB"' if t.verified || !facility.verify%>>
+                    <td><%=t.user_id%></td>
+                    <td><%=t.created_at.strftime("%Y/%m/%d/%H:%M:%S")%></td>
+                    <td>
+                      <div class="dropdown">
+                      <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-expanded="true" id="des<%=raw count%>">
+                      Description
+                      </a>
+                    <ul class="dropdown-menu" aria-labelledby="des<%=raw count %>"><div><%= t.description%></div></ul>
+                    </td>
+                      </div>
+                      <% if facility.verify && !t.verified %>
+                        <td><button class="btn btn-success permit btn-sm" rentId="<%=raw t.id %>">Permit</button></td>
+                        <% else if facility.verify && t.verified%>
+                          <td><button class="btn forbid" rentId="<%=raw t.id %>">Forbid</button></td>
+                      <% end %>
+                    <% end %>
+                      <td><button class="btn btn-danger btn-sm delete" rentId="<%=raw t.id %>">Delete</button></td>
+                  </tr>
+                  <% count += 1 %>
+                <% end %>
+                </tbody></table>
+              <% end %>
+            <% end %>
+          <% end %>
+    </div>
+    <div class="modal-footer dropdown dropup" >
+        <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="change-bulletin" >Change bulletin</button>
+        <div class="dropdown-menu" aria-labelledby="change-bulletin">
+          <div class="container">
+          <%= form_tag('/facilities/'+facility.id.to_s, method: "put") do %>
+            <div class="input-group">
+              <%= hidden_field_tag 'change', 'board' %>
+              <%= label_tag(:bulletin, "Bulletin") %><br>
+              <%= text_area_tag(:board,nil ,placeholder: facility.board) %>
+            </div>
+              <%= submit_tag("Bulletin", class: "btn btn-primary") %>
+          <% end %>
+          </div>
+        </div>
+      <% if facility.membership %>
+        <button class="btn btn-warning switch-member">Turn off membership</button>
+      <% else %>
+        <button class="btn btn-warning switch-member">Turn on membership</button>
+      <% end %>
+      <a class="btn"  href="/facilities/<%=raw facility.id.to_s %>/edit/more">More...</a>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+<%= form_tag '/facilities/'+facility.id.to_s, id: 'member', method: 'put' do %>
+  <%= hidden_field_tag 'change', 'membership' %>
+<% end %>

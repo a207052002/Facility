@@ -53,9 +53,9 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 
-# for login bar
-gem 'sticky-rails'
-gem 'bootstrap', '~>4.0.0.alpha6'
-
+# NCU login
 gem 'rack-openid', github: 'david50407/rack-openid'
 gem 'omniauth-ncu-portal-openid', :github => 'david50407/omniauth-ncu-portal-openid'
+
+#Bootstrap3
+gem 'bootstrap-sass', '~> 3.3.6'

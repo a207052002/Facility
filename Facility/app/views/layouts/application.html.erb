@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <% content_for :logined do %>
-  <ul class="navbar-nav ml-auto p-5">
-  <li class="nav-item dropdown">
-  <a class="btn btn-outline-warning dropdown-toggle" href="#" id="logmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #444444; font-size: 3vh;  font-weight: 600; border-radius:4px; border:0px; padding: 1vh;" >LogTool</a>
-    <div class="dropdown-menu" aria-labelledby="logmenu">
-    <a class="dropdown-item" href="http://140.115.3.105:3000/logout">Logout</a>
-    </div>
+  <ul class="col-sm-1  nav navbar-right">
+  <li class="nav-item  dropdown navbar-right">
+    <a class="btn btn-outline-secondary navbar-btn dropdown-toggle" href="#" role="button" id="logmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #888888; font-size:20px; font-weight: 500; border-radius:4px; border:0px; padding: 1vh;" ><%=current_user %><span class="caret"></span></a>
+    <ul class="dropdown-menu" aria-labelledby="logmenu">
+      <li><a class="dropdown-item navbar-link" style="color:#888888;" href="#">Information</li>
+      <li role="presentation" class="divider"></li>
+      <li><a class="dropdown-item navbar-link" style="color:#888888;" href="http://140.115.3.105:3000/logout">Logout</a></li>
+    </ul>
   </li>
   </ul>
 <% end %>
 <% content_for :unauth do%>
-  <ul class="nav navbar-nav ml-auto p-5">
-      <li class="nav-item">
-        <a class="btn btn-outline-secondary" href="http://140.115.3.105:3000/login" style="color:#999999; font-size:3vh; font-weight:600; border-radius:2px; border:0px; padding:1vh;">Login</a>
-      </li>
-    </ul>
+  <ul class="navbar-right nav">
+    <li>
+      <a class="btn btn-outline-secondary navbar-btn" href="http://140.115.3.105:3000/login" style="color:#999999; font-size:20px; font-weight:600; border-radius:2px; border:0px; padding:1vh;">Login</a>
+    </li>
+  </ul>
 <% end %>
 <html>
   <head>
@@ -23,26 +25,31 @@
     <style>
       body {
         position: relative;
-          padding: 0 3vw;
+        padding: 30px 30px;
       }
     </style>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body data-spy="scroll" data-target="#navscroll">
-    <nav id="navscroll" class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top" style="height:10vh;">
-      <a class="nav-link" href="#home" style="font-weight:750; font-size:4vh; color:#FFFFFF">NCU Register</a>
-        <ul class="navbar-nav nav-pills mr-auto">
-          <li><a class="nav-link" href="#list">List </a></li>
-          <li><a class="nav-link" href="#admin">Admin</a></li>
-          <li><a class="nav-link" href="#create"> New </a></li>
-        </ul>
-      <% if current_user.nil? %>
-        <%= yield :unauth %>
-      <% else %>
-         <%= yield :logined%>
-       <% end %>
+  <body>
+    <nav id="navscroll" class="navbar navbar-toggleable navbar-inverse bg-inverse navbar-fixed-top" style="background-color:#333333; height:70px;" >
+      <div class="container">
+          <ul class="navbar-nav">
+          <a class="navbar-link navbar-btn navbar-left" href="http://140.115.3.105:3000/facilities" style="font-weight:750; font-size:35px; color:#FFFFFF">NCU Register</a>
+          </ul>
+        <% if content_for? :index %>
+          <%= yield :index %>
+        <% end %>
+        <% if content_for? :more%>
+          <%= yield :more %>
+        <% end %>
+         <% if current_user.nil? %>
+          <%= yield :unauth %>
+        <% else %>
+          <%= yield :logined%>
+        <% end %>
+      </div>
     </nav>
     <%= yield %>
   </body>

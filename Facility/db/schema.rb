@@ -12,17 +12,18 @@
 
 ActiveRecord::Schema.define(version: 20170411075802) do
 
-  create_table "allow_user", force: :cascade do |t|
+  create_table "allow_users", force: :cascade do |t|
     t.string  "portal_id"
     t.integer "facility_id"
-    t.index ["facility_id"], name: "index_allow_user_on_facility_id"
+    t.index ["facility_id"], name: "index_allow_users_on_facility_id"
   end
 
   create_table "facilities", force: :cascade do |t|
     t.string  "name",                        null: false
     t.string  "description",                 null: false
-    t.boolean "limit",       default: false, null: false
+    t.boolean "membership",  default: false, null: false
     t.boolean "verify",      default: false, null: false
+    t.string  "board"
   end
 
   create_table "facilities_users", force: :cascade do |t|
@@ -32,16 +33,24 @@ ActiveRecord::Schema.define(version: 20170411075802) do
     t.index ["user_id"], name: "index_facilities_users_on_user_id"
   end
 
-  create_table "use_times", force: :cascade do |t|
+  create_table "large_rent", force: :cascade do |t|
+    t.string   "period",  null: false
+    t.datetime "day",     null: false
+    t.integer  "month",   null: false
+    t.integer  "rent_id"
+    t.index ["rent_id"], name: "index_large_rent_on_rent_id"
+  end
+
+  create_table "rents", force: :cascade do |t|
     t.string   "period",                      null: false
     t.datetime "day",                         null: false
     t.datetime "created_at"
-    t.integer  "user_id"
     t.string   "description", default: "",    null: false
     t.integer  "facility_id"
+    t.string   "user_id",                     null: false
     t.boolean  "verified",    default: false
-    t.index ["facility_id"], name: "index_use_times_on_facility_id"
-    t.index ["user_id"], name: "index_use_times_on_user_id"
+    t.boolean  "large",       default: false
+    t.index ["facility_id"], name: "index_rents_on_facility_id"
   end
 
   create_table "users", force: :cascade do |t|
