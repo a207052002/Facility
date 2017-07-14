@@ -14,7 +14,7 @@
   <tbody>
     <% facilities = Facility.limit(10) %>
     <% facilities.each do |t| %>
-      <tr class='clickable-row' data-href="http://140.115.3.105:3000/facilities/<%= t.id%>">
+      <tr class='clickable-row' data-href="/facilities/<%= t.id%>">
       <th><%= t.id %></th>
       <td><%= t.name.to_s %></td>
       <td><%= t.description.to_s %></td>
@@ -44,7 +44,7 @@
       <% else %>
         <% if User.find_by(portal_id: current_user).present? %>
         <% User.find_by(portal_id: current_user).facilities.each do |t|  %>
-          <tr class='clickable-adm' data-href="http://140.115.3.105:3000/facilities/<%= t.id%>/edit" data-id="<%=t.id %>" >
+          <tr class='clickable-adm' data-href="/facilities/<%= t.id%>/edit" data-id="<%=t.id %>" >
           <th><%= t.id %></th>
           <td><%= t.name.to_s %></td>
           <td><%= t.description.to_s %></td>
@@ -160,16 +160,15 @@ $(document).on("turbolinks:load", function(){
     function(){
       window.the_btn = $(this)
       $.ajax( {type: "PUT",
-        url: "/facilities/"+window.admin_id+"/rent/" + window.the_btn.attr('rentId') + "?authenticity_token=" + $('meta[name=csrf-token]').attr('content'),
+        url: "/facilities/"+window.admin_id+"/rent/" + window.the_btn.attr('rentId'),
+        data:  {authenticity_token : $('meta[name=csrf-token]').attr('content')},
         success: function(){
-          $('rent'+$(this).data('rentId')).remove()
+          window.the_btn.remove()
         }
       })
   })
   $(document).on("click", ".switch-member",
     function(){
-      console.log("click!!")
-      console.log($("#member"))
       $("#member").submit()
     }
   )

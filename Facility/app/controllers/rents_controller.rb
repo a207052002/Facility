@@ -45,7 +45,7 @@ class RentsController < ApplicationController
     facility = Facility.find_by(id: params[:id])
     the_rent = facility.rents.find_by(id: params[:rent_id])
     if(facility.users.find_by(portal_id: current_user).present? || the_rent.user_id == current_user)
-      the_rent.destory
+      the_rent.destroy
     end
   end
 

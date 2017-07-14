@@ -43,12 +43,12 @@
                     </td>
                       </div>
                       <% if facility.verify && !t.verified %>
-                        <td><button class="btn btn-success permit btn-sm" rentId="<%=raw t.id %>">Permit</button></td>
+                        <td><button type="button" class="btn btn-success permit btn-sm" rentId="<%=raw t.id %>">Permit</button></td>
                         <% else if facility.verify && t.verified%>
-                          <td><button class="btn forbid" rentId="<%=raw t.id %>">Forbid</button></td>
+                          <td><button type="button" class="btn forbid" rentId="<%=raw t.id %>">Forbid</button></td>
                       <% end %>
                     <% end %>
-                      <td><button class="btn btn-danger btn-sm delete" rentId="<%=raw t.id %>">Delete</button></td>
+                      <td><button type="button" class="btn btn-danger btn-sm delete" rentId="<%=raw t.id %>">Delete</button></td>
                   </tr>
                   <% count += 1 %>
                 <% end %>
