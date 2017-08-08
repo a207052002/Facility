@@ -77,8 +77,9 @@
 $(document).on('turbolinks:load', function(){
   $(".clickable-adm").click(function() {
     let the_row = $(this)
+    window.nowadm = $(this)
     $.ajax( { url :$(this).data('href'), success: function(res){
-        $('#adminmodal').html(res).promise().done(function (){
+      $('#adminmodal').html(res).promise().done(function (){
           $('#adminmodal').modal('show')
           window.admin_id = the_row.data('id')
         $(document).ready()
@@ -156,6 +157,14 @@ $(document).on("turbolinks:load", function(){
       })
     }
   )
+
+  $(document).on("click", ".morebtn",
+    function(){
+      $('#adminmodal').modal('hide')
+      window.location='/facilities/'+ window.nowadm.data('id') +'/edit/more'
+    }
+  )
+
   $(document).on("click", ".permit",
     function(){
       window.the_btn = $(this)

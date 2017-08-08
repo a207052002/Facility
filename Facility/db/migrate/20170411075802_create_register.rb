@@ -31,6 +31,8 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.string :user_id, null: false
       t.boolean :verified, default: false
       t.boolean :large, default: false
+      t.boolean :cart, default: false
+      t.string :cart_serial
     end
 
     create_table :large_rent do |t|

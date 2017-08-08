@@ -23,7 +23,12 @@
     </div>
     <button id="findTable" class="btn btn-secondary" style="display: inline-block;" >Find</button>
   </div>
-
+  <hr>
+  <div class="container row">
+    <button class="col-sm-3 cartbtn btn">Cart mode switcher</button>
+    <span id="carttitle" class="col-sm-4 col-sm-offset-2" style="display: inline-block; font-size: 25px; display:none; color:#AAAAFF;">Cart Mode</span>
+    <button class="btn col-sm-offset-1 col-sm-2 cartsub" style="display: none" id="cartsubmit">Cart submit</button>
+  </div>
   <nav class="tcenter">
     <ul class="pager nav navbar-left nav-tabs" style="display: inline-block;">
       <li><a class="btn last" data-toggle="tab" >LastWeek</a></li>
@@ -77,6 +82,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d1.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day1.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -92,6 +98,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d2.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day2.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -107,6 +114,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d3.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day3.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -122,6 +130,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d4.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day4.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -137,6 +146,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d5.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day5.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -152,6 +162,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d6.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day6.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -167,6 +178,7 @@
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
+                id="<%= d7.strftime("%Y/%m/%d/")+j.to_s %>"
                 >
                 <% if (rent =day7.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -252,9 +264,21 @@
       </div>
       <div class="modal-body">
         <p id="user" class="well"><%= current_user%></p>
+        <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :put, class: 'form-controll') do%>
+          <div class="form-group">
+            <label>Change description</label><br>
+            <textarea type="text" rows="6" name="description"></textarea><br>
+            <button class="btn btn-info">Change</button>
+          </div>
+        <% end %>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div class="col-sm-2">
+        <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :delete, class: 'form-controll') do%>
+          <button class="btn btn-warning">Delete</button>
+        <% end %>
+        </div>
       </div>
     </div>
   </div>
@@ -279,6 +303,36 @@
 </div>
 
 
+<div class="modal fade" id="cartlist" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Cart check</h4>
+        <h5>Following is the time you'd like to submit.<h5>
+      </div>
+      <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :post, class: 'form-controll') do%>
+      <%= hidden_field_tag 'cart', true %>
+      <div class="modal-body" >
+        <div id="incartlist" style="overflow: auto; height:50vh;">
+        </div>
+        <div class="form-group">
+          <label>Despriction</label>
+          <textarea class="form-control" rows="6" name="description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="checkbox">
+          <label><input type="checkbox" id="cartcheck" name="cartnonbreak" value="true">Would you like to keep whole or break?</input></label>
+        </div>
+        <button class="btn brn-primary">Sure</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    <% end %>
+    </div>
+  </div>
+</div>
+
 
 <% if facility.verify %>
   <script>
@@ -291,6 +345,8 @@ var verify = "false"
 <% end %>
 
 <script>
+window.carttitlecart = false
+window.cart = false
 <% if !current_user.nil? %>
     <%   login = '"' + current_user + '"' %>
 <% else %>
@@ -305,6 +361,7 @@ window.currentLogin = <%=raw login %>
 window.globalVar="null"
 window.facilityId = <%=raw params[:id] %>
 window.week = 0
+window.cartarr=[]
 var stime = "null"
 $(document).on('turbolinks:load', function(){
   $('#findTable').click(
@@ -315,6 +372,10 @@ $(document).on('turbolinks:load', function(){
       var id = window.facilityId;
       $.ajax(id + "/table", {success: function(response){
         $('#weekTable').html(response);
+        if(window.cartarr[window.week+55]!=null){
+          $(document).ready()
+          window.cartarr[window.week+55].forEach(function(e){$('#'+e).css('background-color','#AAAAFF')})
+        }
       }, data: theDate})
     }
   );
@@ -323,60 +384,129 @@ $(document).on('turbolinks:load', function(){
     mouseenter: function() {
       var me = $(this)
       function origin(callback){
-        window.origin = me.css('background-color')
+        window.origin=me.css('background-color')
         callback('background-color', '#CCCCCC')
       }
       origin(function(){
         me.css('background-color','#CCCCCC')
       })
     },
-    mouseleave: function() {$(this).css('background-color',window.origin);}
+    mouseleave: function() {
+      if(window.cart){
+        if(window.cartarr[window.week+55]!=null){
+          if(window.cartarr[window.week+55].indexOf($(this).attr('id'))!=-1){
+            console.log('blue')
+            $(this).css('background-color', '#AAAAFF')
+          }else{
+            if($(this).hasClass('tablebg')){
+              $(this).css('background-color','#EEEEEE')
+            }else{
+              $(this).css('background-color','transparent');
+            }
+          }
+        }else{
+          if($(this).hasClass('tablebg')){
+            $(this).css('background-color','#EEEEEE')
+          }else{
+            $(this).css('background-color','transparent');
+          }
+        }
+      }else{
+        if($(this).hasClass('tablebg')){
+          $(this).css('background-color','#EEEEEE')
+        }else if($(this).data('rented')){
+          $(this).css('background-color','#BBFFBB');
+        }else if($(this).data('rented')=='review'){
+          $(this).css('background-color','#FFAAAA')
+        }else{
+          $(this).css('background-color','transparent')
+        }
+      }
+    }
   },'.clickcell');
 
+  //no negative index, so plus 55
   $(document).on('click', '.clickcell',
     function() {
-      if($(this).data('rented')==true && $(this).data('rented')!='review'){
-        var entity = $(this)
-         var reg = /\s*(\S*)\s*/g
-         var match = reg.exec($(this).text())
-        if(window.currentLogin == match[1]){
-          $('#rentchange').modal('show')
+      if(window.cart){
+        if(window.cartarr[window.week+55]==undefined){
+          $(this).css('background-color', "#AAAAFF")
+          window.cartarr[window.week+55]=[$(this).attr("id")]
+        }else if(window.cartarr[window.week+55].indexOf($(this).attr('id')) >= 0){
+          var index = window.cartarr[window.week+55].indexOf($(this).attr('id'))
+          if($(this).data('rented')=='review'){
+            $(this).css('background-color', '#FFAAAA')
+          }else{
+            $(this).css('background-color', '#FFFFFF')
+          }
+          console.log(window.cartarr[window.week+55][index] )
+          window.cartarr[window.week+55].splice(index,1)
+          console.log(window.cartarr[window.week+55][index] )
         }else{
-          alert('You can not change the rent.')
+          $(this).css('background-color', "#AAAAFF")
+          window.cartarr[window.week+55].push($(this).attr("id"))
         }
-      }
-      else if($(this).data('rented') == 'review'){
-      }
-      else if(login != ""){
-        var wday = $(this).data('wday')
-        var time = $(this).data('time')
-        function f1(time){
-          console.log($('#period').children(window.globalVar).prop("selected",false))
+    console.log(window.cartarr[window.week+55])
+      }else{
+        if($(this).data('rented')==true && $(this).data('rented')!='review'){
+          var entity = $(this)
+          var reg = /\s*(\S*)\s*/g
+          var match = reg.exec($(this).text())
+          if(window.currentLogin == match[1]){
+            $('#rentchange').modal('show')
+          }else{
+            alert('You can not change the rent.')
+          }
         }
-        function f2(time){
-          window.globalVar = '#' +  time;
+        else if($(this).data('rented') == 'review'){
         }
-        function f3(time){
-          console.log($('#period').children(window.globalVar).prop("selected",true))
+        else if(login != ""){
+          var wday = $(this).data('wday')
+          var time = $(this).data('time')
+          function f1(time){
+            console.log($('#period').children(window.globalVar).prop("selected",false))
+          }
+          function f2(time){
+            window.globalVar = '#' +  time;
+          }
+          function f3(time){
+            console.log($('#period').children(window.globalVar).prop("selected",true))
+          }
+          var callbacks = $.Callbacks();
+          callbacks.add(f1)
+          callbacks.add(f2)
+          callbacks.add(f3)
+          callbacks.fire($(this).data('time'))
+          $("#user").text("Current user: " + login);
+          $("#day").val(wday)
+          $("#time").val(time)
+          $('#rent').modal('show')
         }
-        var callbacks = $.Callbacks();
-        callbacks.add(f1)
-        callbacks.add(f2)
-        callbacks.add(f3)
-        callbacks.fire($(this).data('time'))
-        $("#user").text("Current user: " + login);
-        $("#day").val(wday)
-        $("#time").val(time)
-        $('#rent').modal('show')
-      }
-      else{
-        alert("Please login first.");
+        else{
+          alert("Please login first.");
+        }
       }
     });
 
   <% if params[:notice].nil?%>
       $('#board').modal('show')
   <% end %>
+  $(document).on('click', '.cartbtn', function(){
+    window.cart = !window.cart
+    if(window.cart){
+      $('#cartsubmit').fadeIn('500')
+      $('#carttitle').fadeIn('500')
+      $('html body').animate({
+        backgroundColor: "#DDFFDD"
+      }, 500 )
+    }else{
+      $('#cartsubmit').fadeOut('500')
+      $('#carttitle').fadeOut('500')
+      $('html body').animate({
+        backgroundColor: "#FFFFFF"
+      }, 500)
+    }
+  })
 
   $(document).on('click', '.next',
     function() {
@@ -386,7 +516,13 @@ $(document).on('turbolinks:load', function(){
         window.res = response
         $('#weekTable').fadeOut("fast", function(){
           $('#weekTable').html(window.res).promise().done(
-            $("#weekTable").fadeIn("slow")
+            function(){
+              if(window.cartarr[window.week+55]!=null){
+                $(document).ready()
+                window.cartarr[window.week+55].forEach(function(e){$(document.getElementById(e)).css('background-color','#AAAAFF')})
+              }
+              $("#weekTable").fadeIn("slow")
+            }
           );
         });
       }, data: theDate})
@@ -400,7 +536,13 @@ $(document).on('turbolinks:load', function(){
         window.res = response
         $('#weekTable').fadeOut("fast", function(){
           $('#weekTable').html(window.res).promise().done(
-            $("#weekTable").fadeIn("slow")
+            function(){
+              if(window.cartarr[window.week+55]!=null){
+                $(document).ready()
+                window.cartarr[window.week+55].forEach(function(e){$(document.getElementById(e)).css('background-color','#AAAAFF')})
+              }
+              $("#weekTable").fadeIn("slow")
+            }
           );
         });
       }, data: theDate})
@@ -413,6 +555,20 @@ $(document).on('turbolinks:load', function(){
         location.reload()})
     }
   )
+
+  $(document).on('click', '.cartsub',
+    function(){
+      $('#incartlist').html('');
+      $('#cartlist').modal('show')
+      window.cartarr.forEach(function(week){
+        week.forEach(function(p){
+          $('#incartlist').append('<p>'+ p +  '</p>')
+          $('#incartlist').append('<input type="hidden" name="periods[]" value=' + p + '>')
+        })
+      })
+    }
+  )
+
 })
   <% if(params[:notice] == 'failed') %>
     <script>

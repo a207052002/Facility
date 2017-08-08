@@ -15,3 +15,4 @@
 //= require bootstrap-sprockets
 //= require turbolinks
 //turbolinks
+//=require jquery-ui

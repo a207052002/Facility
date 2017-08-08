@@ -11,6 +11,12 @@
  * It is generally better to create a new file per style scope.
  *
  */
+/*
+ *= require jquery-ui
+ */
+@import 'jquery-ui/core.css';
+@import 'jquery-ui/datepicker.css';
+@import 'jquery-ui/theme.css';
 @import "bootstrap-sprockets";
 @import "bootstrap";
 .btn {

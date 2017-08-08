@@ -50,6 +50,8 @@ ActiveRecord::Schema.define(version: 20170411075802) do
     t.string   "user_id",                     null: false
     t.boolean  "verified",    default: false
     t.boolean  "large",       default: false
+    t.boolean  "cart",        default: false
+    t.string   "cart_serial"
     t.index ["facility_id"], name: "index_rents_on_facility_id"
   end
 
