@@ -1,0 +1,119 @@
+<% facility = Facility.find_by(id: params[:id]) %>
+<% rents = facility.rents %>
+<% wday = DateTime.now.next_day(params[:week].to_i*7).cwday %>
+<% year = DateTime.now.next_day(params[:week].to_i*7).year %>
+<% month = DateTime.now.next_day(params[:week].to_i*7).month %>
+<% day = DateTime.now.next_day(params[:week].to_i*7).day %>
+<% utc_zone_today = Time.utc(year, month, day).in_time_zone %>
+<% if params[:week].present? %>
+  <% i = params[:week].to_i * 7 %>
+  <% today = DateTime.new(year, month, day).next_day(i) %>
+<% else %>
+  <% today = DateTime.new(year, month, day) %>
+<% end %>
+<% day_rents =  rents.group_by(&:day) %>
+<div id="edit-table">
+      <nav class="tcenter">
+        <ul class="pager nav navbar-left nav-tabs" style="display: inline-block;">
+          <li><a class="btn last-edit" >LastWeek</a></li>
+        </ul>
+        <ul style="display: inline-block;"><li style="list-style-type: none;"><span style="font-size:40px"><%='Week' %></span></li></ul>
+        <ul class="pager nav navbar-right nav-tabs" style="display: inline-block;">
+          <li><a class="btn next-edit" >NextWeek</a></li>
+        </ul>
+      </nav>
+  <table class="table table-bordered">
+    <thead>
+      <th></th>
+      <th style="text-align:center;"><%= (d1 = today.next_day(1-wday)).strftime("%m/%d") %></th>
+      <th style="text-align:center;"><%= (d2 = today.next_day(2-wday)).strftime("%m/%d") %></th>
+      <th style="text-align:center;"><%= (d3 = today.next_day(3-wday)).strftime("%m/%d") %></th>
+      <th style="text-align:center;"><%= (d4 = today.next_day(4-wday)).strftime("%m/%d") %></th>
+      <th style="text-align:center;"><%= (d5 = today.next_day(5-wday)).strftime("%m/%d") %></th>
+      <th style="text-align:center;"><%= (d6 = today.next_day(6-wday)).strftime("%m/%d") %></th>
+      <th style="text-align:center;"><%= (d7 = today.next_day(7-wday)).strftime("%m/%d") %></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th style="text-align:center;">Monday</th>
+        <th style="text-align:center;">Tuesday</th>
+        <th style="text-align:center;">Wedsday</th>
+        <th style="text-align:center;">Thursday</th>
+        <th style="text-align:center;">Friday</th>
+        <th style="text-align:center;">Saturday</th>
+        <th style="text-align:center;">Sunday</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for p in 1..15 %>
+        <tr>
+          <th style="text-align:center;"><%= p.to_s(16).upcase%></th>
+          <% for w in 1..7 %>
+            <% r=nil %>
+            <% serial = nil %>
+            <% rents =  day_rents[utc_zone_today + (w-wday).day] %>
+            <% r = (rents.select{ |r| r.period == p.to_s }) if rents.present?%>
+            <% if r.present? %>
+              <% if r.first.cart_serial != '000000' %>
+                <% serial = r.first.cart_serial.to_s %>
+              <% end %>
+            <% end %>
+            <td data-id="<%=raw r.first.id if r.present?%>" class="<%if r.present? %>clickcelledit <%=raw serial%> <% end %>" <%=raw 'data-serial='+'"'+serial+'"' if serial.present?%>  data-editday="<%=raw (the_day = today.next_day(w-wday)) %>" <% if r.present? %> <% if r.first.verified || !facility.verify %> style="background-color: #AAFFAA" data-review="true" <% else %> <% if r.size == 1 %>style="background-color: #EEAAAA" data-review="review" <% else %> style="background-color: #FFCCAA" data-rent="multireview" <%end %>   <% end %> <% end %> data-toggle="dropdown" type="button" >
+                <%= r.first.user_id if r.present?%>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    <tbody>
+  </table>
+</div>
+
+  <script>
+  window.controllpane=false
+
+
+  $(document).on({
+    mouseenter: function(){
+      if($(this).data('serial')){
+        $('.' + $(this).data('serial') ).css('background-color', '#CCCCCC')
+      }else{
+        $(this).css('background-color', '#CCCCCC')
+      }
+    },
+    mouseleave: function(){
+      if($(this).data('serial')){
+        $('.' + $(this).data('serial')).each(function(i,v){
+          if($(v).data('review')=='review'){
+            $(v).css('background-color', '#FFAAAA')
+          }else if($(v).data('rent')=='multireview'){
+            $(v).css('background-color','#FFCCAA')
+          }else{
+            $(v).css('background-color','#FFFFFF')
+          }
+        })
+      }else{
+        if($(this).data('review')==true){
+          $(this).css('background-color','#AAFFAA')
+        }else if($(this).data('review')=='review'){
+          $(this).css('background-color','#FFAAAA')
+        }else if($(this).data('rent')=='multireview'){
+          $(this).css('background-color', '#FFCCAA')
+        }else{
+          $(this).css('background-color', '#FFFFFF')
+        }
+      }
+    },
+    click: function(){
+      if(!$('#outterdropdown').hasClass('open')){
+        $('#rentcontroll')[0].click()
+      }
+      $('#controllpane').html('<h5>讀取中</h5>')
+      $.ajax({
+        url: '/facilities/'+"<%=raw params[:id].to_s %>"+'/rent/' + $(this).data('id'),
+        data: { type : 'controll' },
+        success: function(res){$('#controllpane').html(res)}
+      })
+    }
+  }, ".clickcelledit")
+
+</script>

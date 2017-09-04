@@ -32,7 +32,7 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.boolean :verified, default: false
       t.boolean :large, default: false
       t.boolean :cart, default: false
-      t.string :cart_serial
+      t.string :cart_serial, default: "000000"
     end
 
     create_table :large_rent do |t|

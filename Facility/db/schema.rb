@@ -42,16 +42,16 @@ ActiveRecord::Schema.define(version: 20170411075802) do
   end
 
   create_table "rents", force: :cascade do |t|
-    t.string   "period",                      null: false
-    t.datetime "day",                         null: false
+    t.string   "period",                         null: false
+    t.datetime "day",                            null: false
     t.datetime "created_at"
-    t.string   "description", default: "",    null: false
+    t.string   "description", default: "",       null: false
     t.integer  "facility_id"
-    t.string   "user_id",                     null: false
+    t.string   "user_id",                        null: false
     t.boolean  "verified",    default: false
     t.boolean  "large",       default: false
     t.boolean  "cart",        default: false
-    t.string   "cart_serial"
+    t.string   "cart_serial", default: "000000"
     t.index ["facility_id"], name: "index_rents_on_facility_id"
   end
 

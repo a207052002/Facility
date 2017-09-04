@@ -1,6 +1,6 @@
 class FacilitiesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  layout false, only: [:table,:edit]
+  layout false, only: [:table,:edit,:edit_table]
   def index
   end
 
@@ -56,13 +56,17 @@ class FacilitiesController < ApplicationController
   def more_edit
     owner = (facility=Facility.find_by(id: params[:id])).users.find_by(portal_id: current_user)
     if(owner.present? && params[:content].present?)
-      if params[:more]=='admin'
-        facility.users.create(portal_id: params[:content])
-      elsif params[:more]=='member'
-        facility.allow_users.create(portal_id: params[:content])
+      if params[:more]=='admin' && facility.users.find_by(portal_id: params[:content]).nil?
+        user = User.find_or_create_by(portal_id: params[:content])
+        facility.users << user
+      elsif params[:more]=='member' && facility.allow_users.find_by(portal_id: params[:content])
+        user = User.find_or_create_by(portal_id: params[:content])
+        facility.allow_users << user
       elsif params[:more]=='description'
         facility.update(description: params[:content])
         redirect_to '/facilities/'+params[:id]+'/edit/more', notice: 'description changed'
+      else
+        redirect_to '/facilities/'+params[:id]+'/edit/more', notice: 'Error'
       end
     end
   end
@@ -84,5 +88,8 @@ class FacilitiesController < ApplicationController
   end
 
   def table
+  end
+
+  def edit_table
   end
 end

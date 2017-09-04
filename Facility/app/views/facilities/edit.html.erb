@@ -1,63 +1,149 @@
-<% facility = Facility.find_by(id: params[:id]) %>
-<% pre_day = '0' %>
-<% pre_period = '0' %>
-<% one_rents = []%>
-<% rents = facility.rents.order(:day).order(:period).order(:created_at) %>
-<% hash = {} %>
-<% pre_day = 0 %>
-<% pre_period = 0 %>
-<% rents.each do |d|%>
-  <%  if(pre_day == d.day && pre_period == d.period) %>
-    <%  hash[d.day][d.period].push d %>
-  <% else %>
-    <% hash.merge!({d.day=> {d.period=> [d]}}) %>
-  <% end %>
-  <% pre_day = d.day %>
-  <% pre_period = d.period %>
-<% end %>
-
-<div class="modal-dialog" style="overflow-y: initial;">
+<% rents = (facility = Facility.find_by(id: params[:id])).rents  %>
+<div class="modal-dialog" style="width:70vw; overflow-y: initial;">
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      <h4 class="modal-title"><%= facility.name %></h4>
+      <ul class="nav nav-pills">
+        <li class="disabled"><a><%= facility.name %></a></li>
+        <li class="active"><a data-toggle="pill" href="#displayByTable">By table</a></li>
+        <li><a data-toggle="pill" href="#displayByDay">By day</a></li>
+      </ul>
     </div>
-    <div class="modal-body" style="height: 60vh; overflow-y: auto;">
+    <div class="modal-body" style=" height: 72vh; overflow-y: auto; overflow-x: hidden;">
       <h4>Review</h4>
-          <% count = 0 %>
-          <% hash.each do |day, period| %>
-            <% period.each do |p,d| %>
-              <% if d.first.day > DateTime.now-2%>
-              <h4>Day: <%= d.first.day.strftime("%Y/%m/%d")%> Period: <%= d.first.period%></h4>
-              <table class="table"><tbody>
-                <% d.each do |t| %>
-                  <tr id="rent<%=raw t.id %>" <%=raw 'style="background-color: #BBFFBB"' if t.verified || !facility.verify%>>
-                    <td><%=t.user_id%></td>
-                    <td><%=t.created_at.strftime("%Y/%m/%d/%H:%M:%S")%></td>
-                    <td>
-                      <div class="dropdown">
-                      <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-expanded="true" id="des<%=raw count%>">
-                      Description
-                      </a>
-                    <ul class="dropdown-menu" aria-labelledby="des<%=raw count %>"><div><%= t.description%></div></ul>
-                    </td>
-                      </div>
-                      <% if facility.verify && !t.verified %>
-                        <td><button type="button" class="btn btn-success permit btn-sm" rentId="<%=raw t.id %>">Permit</button></td>
-                        <% else if facility.verify && t.verified%>
-                          <td><button type="button" class="btn forbid" rentId="<%=raw t.id %>">Forbid</button></td>
+    <div class="tab-content">
+    <div class="tab-pane fade" id="displayByDay">
+    <% group_rents = rents.group_by(&:day) %>
+    <% elder_rents = group_rents.select{|k, v| k.to_i < (Time.now - 2.day).to_i }%>
+    <% newer_rents = group_rents.select{|k, v| k.to_i >= (Time.now - 2.day).to_i } %>
+    <div class="panel-group">
+      <div class="pabel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-tittle">
+            <a data-toggle="collapse" href="#history">History list</a>
+          </h4>
+        </div>
+        <div id="history" class="panel-collapse collapse container">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <div class="panel-group">
+                <div class="panel panel-default">
+                  <div clas="panel-heading">
+                    <h4 class="pabel-heading">
+                      <% if elder_rents.size > 0 %>
+                        <% elder_rents.each do |d, r| %>
+                          <% r.each do |the_r| %>
+                          Day: <%= d.strftime("%Y/%m/%d")%> Period: <%= the_r.period%>
+                          <% end %>
+                        <% end %>
+                      <% else %>
+                       沒有任何歷史紀錄
                       <% end %>
-                    <% end %>
-                      <td><button type="button" class="btn btn-danger btn-sm delete" rentId="<%=raw t.id %>">Delete</button></td>
-                  </tr>
-                  <% count += 1 %>
-                <% end %>
-                </tbody></table>
-              <% end %>
-            <% end %>
-          <% end %>
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </li>
+          <ul>
+        </div>
+      </div>
     </div>
-    <div class="modal-footer dropdown dropup" >
+    <% newer_rents.each do |key, value| %>
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+            <a data-toggle="collapse" href="#<%=raw key.strftime("%Y-%m-%d") %>">Day: <%= key.strftime("%Y-%m-%d") %></a>
+            </h4>
+          </div>
+          <div id="<%=raw key.strftime("%Y-%m-%d") %>" class="panel-collapse collapse container">
+            <ul class="list-group">
+              <% if value.group_by(&:cart_serial)["000000"].present? %>
+              <li class="list-group-item">
+                <div class="panel-group">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#<%= raw key.strftime("%Y-%m-%d") + "_loose" %>">Loose rents</a>
+                      </h4>
+                    </div>
+                    <div id="<%= raw key.strftime("%Y-%m-%d") + "_loose" %>" class="panel-collapse collapse">
+                      <ul class="list-group">
+                        <% value.group_by(&:cart_serial)["000000"].each do  |r| %>
+                          <li id="loose<%=raw r.id%>" class="list-group-item" <% if facility.verify && !r.verified %> style="background-color: #FFAAAA" <% else %> style="background-color: #AAFFAA"  <% end %>>
+                            <p>Period: <%= (r.period.to_s) %> | <%= r.user_id %></p>
+                            <div class="container">
+                            <button data-renttype="loose" data-id="<%=raw r.id %>" class="btn btn-warning rent-delete"  >Delete</button>
+                            <% if facility.verify && !r.verified %>
+                              <button data-renttype="loose" data-id="<%=raw r.id %>" class="btn btn-primary rent-permit" style="display: inline-block;">Permit</button>
+                            <% end %>
+                            </div>
+                          </li>
+                          <li class="list-group-item">Description: <%= r.description %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+              <% if value.group_by(&:cart_serial).except("000000").present? %>
+              <li class="list-group-item">
+                <div class="panel-group">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#cart_rents_<%=raw key.strftime("%Y-%m-%d") %>">Cart rents</a>
+                      </h4>
+                    </div>
+                    <div id="cart_rents_<%=raw key.strftime("%Y-%m-%d") %>" class="panel-collapse collapse">
+                      <ul class="list-group">
+                      <% value.group_by(&:cart_serial).except("000000").each do |k, v| %>
+                        <li id="serial<%=raw k.to_s %>" class="list-group-item"<% if facility.verify && !v[0].verified %> style="background-color: #FFAAAA;" <% else %> style="background-color: #AAFFAA;" <%end%> ><a class="btn <% if !facility.verify || v[0].verified %> <%=raw "btn-info" %> <% else %> <%=raw "btn-warning"%> <% end %>" data-toggle="collapse" href="#<%= raw k.to_s %>" >Cart serial: <%= k.to_s%></a></li>
+                        <div id="<%=raw k.to_s %>" class="container panel-collapse collapse">
+                          <ul class="list-group">
+                            <li class="list-group-item">
+                              <div class="container">
+                              <% if facility.verify && !v[0].verified %>
+                                <button data-id="<%= k.to_s %>" data-renttype="serial" class="rent-permit btn btn-primary" style="display: inline-block;">Permit</button>
+                              <% end %>
+                              <button data-id="<%= k.to_s %>" data-renttype="serial" class="btn btn-warning rent-delete" style="display: inline-block;">Delete</button>
+                              </div>
+                            </li>
+                            <% v.each do |r| %>
+                              <li class="list-group-item <%= raw 'reviewing' if facility.verify %>">
+                                Period: <%= r.period %>
+                              </li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      <% end %>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    </div>
+    <div class="tab-pane fade in active" id="displayByTable">
+    </div>
+    </div>
+    </div>
+    <div class="modal-footer" >
+      <div id="outterdropdown container" class="dropdown droppane">
+      <button id="rentcontroll" type="button" class="btn btn-primary form-control-static pull-left dropdown-toggle" data-toggle="dropdown">
+        租用瀏覽控制板
+      </button>
+      <ul id="controllpane" class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu" >
+        請於表格模式選擇目標
+      </ul>
+      </div>
+      <div class="btn-group dropup">
         <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="change-bulletin" >Change bulletin</button>
         <div class="dropdown-menu" aria-labelledby="change-bulletin">
           <div class="container">
@@ -78,9 +164,52 @@
       <% end %>
       <a  class="btn morebtn"  href="/facilities/<%=raw facility.id.to_s %>/edit/more">More...</a>
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
 <%= form_tag '/facilities/'+facility.id.to_s, id: 'member', method: 'put' do %>
   <%= hidden_field_tag 'change', 'membership' %>
 <% end %>
+<script>
+window.week=0
+  $(document).on('click', '.next-edit',
+    function(){
+      console.log('ttt')
+      console.log(window.week)
+      window.week = window.week + 1
+      let theDate = { "week" : window.week}
+      $.ajax("facilities/<%=raw params[:id] %>" + "/edit/table", {success: function(response){
+        window.res = response
+        $('#edit-table').fadeOut("fast", function(){
+          $('#edit-table').html(window.res).promise().done(
+            function(){
+              $('#edit-table').fadeIn("slow")
+              $(document).ready()
+            }
+          );
+        });
+      }, data: theDate})
+    }
+  )
+
+  $(document).on('click', '.last-edit',
+    function() {
+      console.log('ttt')
+      console.log(window.week)
+      window.week = window.week - 1
+      let theDate = { "week" : window.week}
+      $.ajax("facilities/<%=raw params[:id] %>" + "/edit/table", {success: function(response){
+        window.res = response
+        $('#edit-table').fadeOut("fast", function(){
+          $('#edit-table').html(window.res).promise().done(
+            function(){
+              $('#edit-table').fadeIn("slow")
+              $(document).ready()
+            }
+          );
+        });
+      }, data: theDate})
+    }
+  )
+</script>

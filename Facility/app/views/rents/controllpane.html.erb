@@ -1,0 +1,45 @@
+<% facility = Facility.find_by(id: params[:id]) %>
+<% rents = facility.rents %>
+<% the_rent = facility.rents.find_by(id: params[:rent_id]) %>
+<% periods = [] %>
+<% if the_rent.cart_serial != '000000' %>
+<script>window.operate = 'serial'</script>
+  <% rents.where(cart_serial: the_rent.cart_serial).each do |r| %>
+    <% periods.push  r.period %>
+  <% end %>
+<% else %>
+<script>window.operate = 'single'</script>
+  <% periods.push the_rent.period %>
+<% end %>
+
+<% all_rents = rents.where(period: periods, day: the_rent.day).group_by(&:cart_serial)%>
+<% all_rents.each do |k, v| %>
+  <% v.sort_by! {|r| r[:period].to_i} %>
+<li class="dropdown-submenu">
+    <a tabindex="-1">
+      Period: <%= v.first.period %><%=('-' + v.last.period ) if v.last!=v.first %>
+      User_id: <%= v.first.user_id%>
+    </a>
+    <ul class="dropdown-menu">
+      <li tabindex="-1" class="dropdown-submenu">
+        <a>Descritption</a>
+        <ul class="dropdown-menu">
+          <%= v.first.description %>
+        </ul>
+      </li>
+      <% if facility.verify && !v.first.verified%>
+        <li><button type="button" class="btn btn-primary table-permit">Permit</button></li>
+      <% end %>
+      <li><div class="container-fluid"><button type="button" class="btn btn-warning table-delete">Delete</button></div></li>
+    </ul>
+</li>
+<% end %>
+<script>
+
+$(document).on({click : function(){
+  $.ajax({url : '<%=raw request.original_url%>',
+          method : 'DELETE',
+          data : {count : window.operate}})
+  }
+},'.table-delete')
+</script>

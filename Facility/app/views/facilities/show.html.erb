@@ -72,17 +72,18 @@
         <tbody>
           <% for j in 1..15 %>
             <% k = j.to_s%>
+            <% hex = j.to_s(16).upcase %>
             <tr>
               <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day1 = facility.rents.where(day: d1, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d1, period: j, verified: true).nil? && facility_verify%>
+                <% if (day1 = facility.rents.where(day: d1, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d1, period: hex, verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d1.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d1.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day1.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -91,14 +92,14 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==2%>" data-wday="<%=d2.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day2 = facility.rents.where(day: d2, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d2, period: j, verified: true).nil? && facility_verify%>
+                <% if (day2 = facility.rents.where(day: d2, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d2, period: hex, verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d2.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d2.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day2.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -107,14 +108,14 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==3%>" data-wday="<%=d3.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day3 = facility.rents.where(day: d3, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d3, period: j, verified: true).nil? && facility_verify%>
+                <% if (day3 = facility.rents.where(day: d3, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d3, period: hex, verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d3.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d3.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day3.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -123,14 +124,14 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==4%>" data-wday="<%=d4.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day4 = facility.rents.where(day: d4, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d4, period: j, verified: true).nil? && facility_verify %>
+                <% if (day4 = facility.rents.where(day: d4, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d4, period: hex, verified: true).nil? && facility_verify %>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d4.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d4.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day4.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -139,14 +140,14 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==5%>" data-wday="<%=d5.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day5 = facility.rents.where(day: d5, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d5, period: j, verified: true).nil? && facility_verify%>
+                <% if (day5 = facility.rents.where(day: d5, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d5, period: hex, verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d5.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d5.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day5.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -155,14 +156,14 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==6%>" data-wday="<%=d6.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day6 = facility.rents.where(day: d6, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d6, period: j, verified: true).nil? && facility_verify%>
+                <% if (day6 = facility.rents.where(day: d6, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d6, period: hex, verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d6.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d6.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day6.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -171,14 +172,14 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==7%>" data-wday="<%=d7.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day7 = facility.rents.where(day: d7, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d7, period: j, verified: true).nil? && facility.verify %>
+                <% if (day7 = facility.rents.where(day: d7, period: hex)).present?%>
+                  <% if facility.rents.find_by(day: d7, period: hex, verified: true).nil? && facility.verify %>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
                   <% end %>
                 <% end %>
-                id="<%= d7.strftime("%Y/%m/%d/")+j.to_s %>"
+                id="<%= d7.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day7.find_by(verified: true)).present? %>
                   <%= rent.user_id %>
@@ -223,8 +224,13 @@
             <label><input type="checkbox" id="largerent" name="largerent" value="true">Large rent</input></label>
           </div>
           <div class="input-group">
-            <label>Continueously rent(Max 18 weeks)</label>
-            <input type="text" name="rentweeks" class="form-control" ></input>
+            <label>向下連續不拆散租借(將會視作一筆不拆散, 最多四節)</label>
+            <select class="form-control" id="cartrent" name="cartrent">
+              <option id="1">1</option>
+              <option id="2">2</option>
+              <option id="3">3</option>
+              <option id="4">4</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -236,6 +242,9 @@
   </div>
 </div>
 
+
+<div class="modal fade" id="queue" role="dialog">
+</div>
 
 <div class="modal fade" id="infomation" role="dialog">
   <div class="modal-dialog">
@@ -284,6 +293,7 @@
   </div>
 </div>
 
+
 <div class="modal fade" id="board" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -318,13 +328,10 @@
         </div>
         <div class="form-group">
           <label>Despriction</label>
-          <textarea class="form-control" rows="6" name="description"></textarea>
+          <textarea class="form-control" rows="6" name="description">""</textarea>
         </div>
       </div>
       <div class="modal-footer">
-        <div class="checkbox">
-          <label><input type="checkbox" id="cartcheck" name="cartnonbreak" value="true">Would you like to keep whole or break?</input></label>
-        </div>
         <button class="btn brn-primary">Sure</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
@@ -333,7 +340,9 @@
   </div>
 </div>
 
-
+<% if flash[:notice]=='failed' %>
+    <script>  alert('The period or periods are not available. ')</script>
+<% end %>
 <% if facility.verify %>
   <script>
 var verify = "true"
@@ -398,28 +407,38 @@ $(document).on('turbolinks:load', function(){
             console.log('blue')
             $(this).css('background-color', '#AAAAFF')
           }else{
-            if($(this).hasClass('tablebg')){
-              $(this).css('background-color','#EEEEEE')
-            }else{
-              $(this).css('background-color','transparent');
-            }
+          if($(this).data('rented')==true){
+            $(this).css('background-color', '#AAFFAA')
+          }else if($(this).data('rented')=="review"){
+            $(this).css('background-color', '#FFAAAA')
+          }else if($(this).hasClass('tablebg')){
+            $(this).css('background-color','#EEEEEE')
+          }else{
+            $(this).css('background-color','transparent');
+          }
           }
         }else{
-          if($(this).hasClass('tablebg')){
+          if($(this).data('rented')==true){
+            $(this).css('background-color', '#AAFFAA')
+          }else if($(this).data('rented')=="review"){
+            $(this).css('background-color', '#FFAAAA')
+          }else if($(this).hasClass('tablebg')){
             $(this).css('background-color','#EEEEEE')
           }else{
             $(this).css('background-color','transparent');
           }
         }
       }else{
-        if($(this).hasClass('tablebg')){
-          $(this).css('background-color','#EEEEEE')
-        }else if($(this).data('rented')){
-          $(this).css('background-color','#BBFFBB');
+        if($(this).data('rented')==true){
+          $(this).css('background-color', '#AAFFAA')
         }else if($(this).data('rented')=='review'){
           $(this).css('background-color','#FFAAAA')
         }else{
-          $(this).css('background-color','transparent')
+          if($(this).hasClass('tablebg')){
+            $(this).css('background-color','#EEEEEE')
+          }else{
+            $(this).css('background-color','transparent')
+          }
         }
       }
     }
@@ -430,8 +449,12 @@ $(document).on('turbolinks:load', function(){
     function() {
       if(window.cart){
         if(window.cartarr[window.week+55]==undefined){
-          $(this).css('background-color', "#AAAAFF")
-          window.cartarr[window.week+55]=[$(this).attr("id")]
+          if($(this).data('rented')!=true){
+            $(this).css('background-color', "#AAAAFF")
+            window.cartarr[window.week+55]=[$(this).attr("id")]
+          }else{
+            alert('The period is not available.')
+          }
         }else if(window.cartarr[window.week+55].indexOf($(this).attr('id')) >= 0){
           var index = window.cartarr[window.week+55].indexOf($(this).attr('id'))
           if($(this).data('rented')=='review'){
@@ -443,8 +466,12 @@ $(document).on('turbolinks:load', function(){
           window.cartarr[window.week+55].splice(index,1)
           console.log(window.cartarr[window.week+55][index] )
         }else{
-          $(this).css('background-color', "#AAAAFF")
-          window.cartarr[window.week+55].push($(this).attr("id"))
+          if($(this).data('rented')!=true){
+            $(this).css('background-color', "#AAAAFF")
+            window.cartarr[window.week+55].push($(this).attr("id"))
+          }else{
+            alert('The period is not available.')
+          }
         }
     console.log(window.cartarr[window.week+55])
       }else{
@@ -459,6 +486,13 @@ $(document).on('turbolinks:load', function(){
           }
         }
         else if($(this).data('rented') == 'review'){
+          console.log('t')
+          $.ajax({url: '/facilities/'+ '<%=raw params[:id] %>'+'/rent',
+            data: {time: $(this).data('time'),
+              day: $(this).data('wday')},
+            success: function(res){$('#queue').html(res)
+              $('#queue').modal('show')
+            }})
         }
         else if(login != ""){
           var wday = $(this).data('wday')
@@ -504,7 +538,9 @@ $(document).on('turbolinks:load', function(){
       $('#carttitle').fadeOut('500')
       $('html body').animate({
         backgroundColor: "#FFFFFF"
-      }, 500)
+      }, 500).promise().done(function(){
+        window.cartarr.forEach(function(e){e.forEach(function(cell){$('#'+cell).css('background-color','transparent')})})
+      }).promise().done(function(){window.cartarr=[]})
     }
   })
 

@@ -83,6 +83,13 @@ $(document).on('turbolinks:load', function(){
           $('#adminmodal').modal('show')
           window.admin_id = the_row.data('id')
         $(document).ready()
+
+        $.ajax({url :window.nowadm.data('href')+'/table', success: function(r){
+          $('#displayByTable').html(r).promise().done(function(){
+            $(document).ready()
+          })
+        }})
+
         })
 //        $('#adminmodal').html(res)
 //        $('#adminmodal').modal('show')
@@ -146,13 +153,15 @@ $(document).on('turbolinks:load', function(){
 
   <script>
 $(document).on("turbolinks:load", function(){
-  $(document).on("click", ".delete",
+  $(document).on("click", ".rent-delete",
     function() {
       window.the_btn = $(this)
       $.ajax({type: "DELETE",
         url: "/facilities/"+window.admin_id+"/rent/" + window.the_btn.attr('rentId') + "?authenticity_token=" + $('meta[name=csrf-token]').attr('content'),
+        data: {rent_type : window.the_btn.data('renttype')},
         success: function(){
-          $('rent'+$(this).data('rentId')).remove()
+          var panel = '#'+window.the_btn.data('renttype')+window.the_btn.data('id')
+          $(panel).fadeOut().promise().done(function(){$(panel).remove()})
         }
       })
     }
@@ -165,14 +174,15 @@ $(document).on("turbolinks:load", function(){
     }
   )
 
-  $(document).on("click", ".permit",
+  $(document).on("click", ".rent-permit",
     function(){
       window.the_btn = $(this)
       $.ajax( {type: "PUT",
-        url: "/facilities/"+window.admin_id+"/rent/" + window.the_btn.attr('rentId'),
-        data:  {authenticity_token : $('meta[name=csrf-token]').attr('content')},
+        url: "/facilities/"+window.admin_id+"/rent/" + window.the_btn.data('id'),
+        data:  {authenticity_token : $('meta[name=csrf-token]').attr('content'), rent_type : window.the_btn.data('renttype')},
         success: function(){
           window.the_btn.remove()
+          $('#'+window.the_btn.data('renttype')+window.the_btn.data('id')).animate({backgroundColor: "#AAFFAA"})
         }
       })
   })
