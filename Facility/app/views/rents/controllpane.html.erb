@@ -28,18 +28,57 @@
         </ul>
       </li>
       <% if facility.verify && !v.first.verified%>
-        <li><button type="button" class="btn btn-primary table-permit">Permit</button></li>
+        <% local_periods = [] %>
+        <% v.each do |r| %>
+          <% local_periods.push r.period %>
+        <% end %>
+        <% if !(rents.where(day: the_rent.day, period: local_periods).any? {|r| r.verified}) %>
+          <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-serial='<%=raw k %>' type="button" class="btn btn-primary admtable-permit">Permit</button></div></li>
+        <% end %>
       <% end %>
-      <li><div class="container-fluid"><button type="button" class="btn btn-warning table-delete">Delete</button></div></li>
+      <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>"  data-serial='<%=raw k %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
     </ul>
 </li>
 <% end %>
-<script>
-
+  <script>
+//deletadm
 $(document).on({click : function(){
+  window.pane_serial = $(this).data('serial')
+  window.singleId = $(this).data('rentid')
   $.ajax({url : '<%=raw request.original_url%>',
           method : 'DELETE',
-          data : {count : window.operate}})
+          data : {count : window.operate, serial : window.pane_serial, single_id : window.rentId},
+          success: function(){
+            $.ajax({url: 'facilities/<%=raw params[:id]%>/edit/table',
+                    success: function(r){
+                      $('#displayByTable').html(r).promise().done(function(){
+                        $(document).ready()})
+                    },
+                    error: function(){alert("Delete response error(Adm).")} })
+          },
+          error: function(){alert("Delete failed.")} })
   }
 },'.table-delete')
+
+$(document).on({
+  click : function(){
+    window.pane_serial = $(this).data('serial')
+    window.singleId = $(this).data('rentid')
+    console.log(window.singleId)
+    $.ajax({url : '<%=raw request.original_url%>',
+            method : 'PUT',
+            data : {serial : window.pane_serial,  single_id : window.singleId, permit : true},
+            success : function(){
+              $.ajax({url : 'facilities/<%=raw params[:id]%>/edit/table',
+                      success : function(r){
+                        $('#displayByTable').html(r).promise().done(function(){
+                        $(document).ready()
+                        })
+                      },
+                      error : function(){alert('Permit response error.')} })
+            },
+            error : function(){alert('Permit failed.')}})
+  }
+}, '.admtable-permit')
+
 </script>

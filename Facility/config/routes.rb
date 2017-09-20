@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   resources :facilities
   post '/facilities/:id/rent' => "rents#new"
   put '/facilities/:id/rent/:rent_id' =>  "rents#update"
+  put '/facilities/:id/rent' =>  "rents#update"
+  get 'facilities/search' => "facilities#search"
   delete '/facilities/:id/rent/:rent_id' => "rents#destroy"
   get '/facilities/:id/rent/:rent_id' => "rents#controllpane"
   get '/facilities/:id/rent' => "rents#info"

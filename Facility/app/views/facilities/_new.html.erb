@@ -1,22 +1,22 @@
-<form action="/facilities" method="POST">
+<%=form_tag('/facilities',method: :post) do %>
   <div class="input-group">
-    <label for="name">Name</label>
+    <label for="name">名稱</label>
     <input type="text" name="name" class="form-control" placeholder="Less than 20 words..."></input>
   </div>
   <div class="input-group">
-    <label for="des">Description</label>
+    <label for="des">描述</label>
     <textarea class="form-control" rows="5" placeholder="Something about the facility..." type="text" name="description"></textarea>
   </div>
   <div class="input-group">
-    <label for="ann">announcement</label>
+    <label for="ann">公告(可於 Admin=>more 修改)</label>
     <textarea class="form-control" rows="5" placeholder="Some announcement here..." type="text" name="board"></textarea>
   </div>
   <hr size="3">
   <div class="input-group">
-    <label class="checkbox-inline"><input type="checkbox" name="verify" value=true>Verification</label>
-    <label class="checkbox-inline"><input type="checkbox" name="limit" value=true>Membership</label>
+    <label class="checkbox-inline"><input type="checkbox" name="verify" value=true>採用審核制(不可更改)</label>
+    <label class="checkbox-inline"><input type="checkbox" name="limit" value=true>採用會員制(可切換)</label>
   </div>
   <hr size="3">
-  <p>Notice: There is only one facility per user or you can send a special request to CC.</p>
-  <div class="input-group"><button class="btn btn-secondary" type="submit" >Submit</button></div>
-</form>
+  <p>注意 : 每人僅能新增兩個設施</p>
+  <div class="input-group"><button class="btn btn-secondary" type="submit" >提交</button></div>
+<% end %>

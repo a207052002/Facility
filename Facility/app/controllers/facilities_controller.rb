@@ -1,21 +1,15 @@
 class FacilitiesController < ApplicationController
-  skip_before_action :verify_authenticity_token
   layout false, only: [:table,:edit,:edit_table]
   def index
+    if params[:search]
+      render "search", layout: false
+    end
   end
 
   def create
-    if(params[:verify]=='true')
-      verify = true
-    else
-      verify = false
-    end
+    verify = params[:verify] || false
+    limit = params[:limit] || false
 
-    if(params[:limit]=='true')
-      limit = true
-    else
-      limit = false
-    end
     facility = User.find_by(portal_id: current_user).facilities.create(name: params[:name], description: params[:description], membership: limit, verify: verify, board: params[:board])
     facility.allow_users.create(portal_id: current_user)
     redirect_to '/facilities'
@@ -88,6 +82,9 @@ class FacilitiesController < ApplicationController
   end
 
   def table
+  end
+
+  def search
   end
 
   def edit_table

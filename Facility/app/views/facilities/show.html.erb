@@ -1,4 +1,4 @@
-<div class="container" style="padding-top: 25px;">
+div class="container" style="padding-top: 25px;">
   <% pass = 'style="background-color: #DDFFDD"' %>
   <% review = 'style="background-color: #FFDDDD"' %>
   <% facility = Facility.find_by(id: params[:id]) %>
@@ -6,7 +6,7 @@
   <p><h1><%= facility.name %></h1><h4>&nbsp;&nbsp;<%= facility.description %></h4></p>
   <div class="container" style="display: inline-block;">
     <div style="display: inline-block;">
-      <label>Month</label>
+      <label>月</label>
       <select class="form-control" id="findMonth" name="findMonth">
         <% for i in 1..12 %>
           <option id="<%=raw i %>"><%=raw i %></option>
@@ -14,20 +14,20 @@
       </select>
     </div>
     <div style="display: inline-block;">
-      <label>Day</label>
+      <label>日</label>
       <select class="form-control" id="findDay" name="findDay">
         <% for i in 1..31 %>
           <option id="<%=raw i %>"><%=raw i %></option>
         <% end %>
       </select>
     </div>
-    <button id="findTable" class="btn btn-secondary" style="display: inline-block;" >Find</button>
+    <button id="findTable" class="btn btn-secondary" style="display: inline-block;" >顯示該日之周</button>
   </div>
   <hr>
   <div class="container row">
-    <button class="col-sm-3 cartbtn btn">Cart mode switcher</button>
-    <span id="carttitle" class="col-sm-4 col-sm-offset-2" style="display: inline-block; font-size: 25px; display:none; color:#AAAAFF;">Cart Mode</span>
-    <button class="btn col-sm-offset-1 col-sm-2 cartsub" style="display: none" id="cartsubmit">Cart submit</button>
+    <button class="col-sm-3 cartbtn btn">購物車模式切換</button>
+    <span id="carttitle" class="col-sm-4 col-sm-offset-2" style="display: inline-block; font-size: 25px; display:none; color:#AAAAFF;">購物車模式</span>
+    <button class="btn col-sm-offset-1 col-sm-2 cartsub" style="display: none" id="cartsubmit">確認清單</button>
   </div>
   <nav class="tcenter">
     <ul class="pager nav navbar-left nav-tabs" style="display: inline-block;">
@@ -39,10 +39,10 @@
     </ul>
   </nav>
   <div id="weekTable">
-    <% wday = DateTime.now.cwday %>
-    <% year = DateTime.now.year %>
-    <% month = DateTime.now.month %>
-    <% day = DateTime.now.day %>
+    <% wday = DateTime.now.next_day(params[:next_week].to_i*7).cwday %>
+    <% year = DateTime.now.next_day(params[:next_week].to_i*7).year %>
+    <% month = DateTime.now.next_day(params[:next_week].to_i*7).month %>
+    <% day = DateTime.now.next_day(params[:next_week].to_i*7).day %>
     <% data_day = DateTime.new(year, month, day)%>
     <% i = 0 %>
     <div id="week">
@@ -72,7 +72,7 @@
         <tbody>
           <% for j in 1..15 %>
             <% k = j.to_s%>
-            <% hex = j.to_s(16).upcase %>
+            <% hex = j.to_s(16) %>
             <tr>
               <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -216,12 +216,17 @@
               <% end %>
             </select>
           </div>
-          <div class="input-group">
+          <div class="form-group">
             <label for="des">Despriction</label>
             <textarea class="form-control" placeholder="Simple description about usage..." type="text" name="description" rows="5" id="des"></textarea>
           </div>
           <div class="checkbox">
-            <label><input type="checkbox" id="largerent" name="largerent" value="true">Large rent</input></label>
+            <label><input type="checkbox" id="largerent" name="largerent" value="true">連借數周(注意: 周之間可拆散審核, 最大: 9)</input></label>
+            <div class="row">
+            <div class="col-xs-2">
+              <input  class="form-control" type="number" min="1" max="9" id="weekly" name="weekly">
+            </div>
+            </div>
           </div>
           <div class="input-group">
             <label>向下連續不拆散租借(將會視作一筆不拆散, 最多四節)</label>
@@ -275,6 +280,7 @@
         <p id="user" class="well"><%= current_user%></p>
         <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :put, class: 'form-controll') do%>
           <div class="form-group">
+          <input id="change_rent_day_change" name="rent_day" type="hidden" value=""/>
             <label>Change description</label><br>
             <textarea type="text" rows="6" name="description"></textarea><br>
             <button class="btn btn-info">Change</button>
@@ -285,6 +291,7 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <div class="col-sm-2">
         <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :delete, class: 'form-controll') do%>
+          <input id="change_rent_day_close" name="rent_day" type="hidden" value=""/>
           <button class="btn btn-warning">Delete</button>
         <% end %>
         </div>
@@ -369,7 +376,7 @@ window.cart = false
 window.currentLogin = <%=raw login %>
 window.globalVar="null"
 window.facilityId = <%=raw params[:id] %>
-window.week = 0
+window.week = <%=raw params[:next_week]%>
 window.cartarr=[]
 var stime = "null"
 $(document).on('turbolinks:load', function(){
@@ -481,6 +488,8 @@ $(document).on('turbolinks:load', function(){
           var match = reg.exec($(this).text())
           if(window.currentLogin == match[1]){
             $('#rentchange').modal('show')
+            $('#change_rent_day_close').attr('value',$(this).attr('id'))
+            $('#change_rent_day_change').attr('value',$(this).attr('id'))
           }else{
             alert('You can not change the rent.')
           }
@@ -517,7 +526,7 @@ $(document).on('turbolinks:load', function(){
           $('#rent').modal('show')
         }
         else{
-          alert("Please login first.");
+          alert("Please login first. 請先登入");
         }
       }
     });

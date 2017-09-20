@@ -7,6 +7,15 @@
         <li class="disabled"><a><%= facility.name %></a></li>
         <li class="active"><a data-toggle="pill" href="#displayByTable">By table</a></li>
         <li><a data-toggle="pill" href="#displayByDay">By day</a></li>
+        <li><div id="outterdropdown container" class="dropdown dropnav droppane">
+      <a id="rentcontroll" type="button" class="btn btn-primary form-control-static pull-left dropdown-toggle" data-toggle="dropdown">
+        租用瀏覽控制板
+      </a>
+      <ul id="controllpane" class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu" >
+        請於表格模式選擇目標
+      </ul>
+          </div>
+          </li>
       </ul>
     </div>
     <div class="modal-body" style=" height: 72vh; overflow-y: auto; overflow-x: hidden;">
@@ -135,14 +144,6 @@
     </div>
     </div>
     <div class="modal-footer" >
-      <div id="outterdropdown container" class="dropdown droppane">
-      <button id="rentcontroll" type="button" class="btn btn-primary form-control-static pull-left dropdown-toggle" data-toggle="dropdown">
-        租用瀏覽控制板
-      </button>
-      <ul id="controllpane" class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu" >
-        請於表格模式選擇目標
-      </ul>
-      </div>
       <div class="btn-group dropup">
         <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="change-bulletin" >Change bulletin</button>
         <div class="dropdown-menu" aria-labelledby="change-bulletin">
@@ -195,7 +196,6 @@ window.week=0
 
   $(document).on('click', '.last-edit',
     function() {
-      console.log('ttt')
       console.log(window.week)
       window.week = window.week - 1
       let theDate = { "week" : window.week}

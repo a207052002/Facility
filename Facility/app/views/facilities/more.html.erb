@@ -4,37 +4,37 @@
 
   <div class="tab-pane fade in active" id="addAdm">
     <div class="input-group" id="admlist">
-      <label>Add administrators</label>
+      <label>新增管理員至 <%= facility.name %></label>
       <div class="container" style="display: inline">
         <div class="container" style="height: 70vh; overflow: auto;">
           <ul id="displayadmin" class="list-group" style="width: 30vw;">
-            <li class="list-group-item list-group-item-info">Current adm(id)</li>
+            <li class="list-group-item list-group-item-info">現有管理員(id)</li>
             <% facility.users.each do |p|%>
-              <li class="list-group-item clearfix" data-sid="<%=raw p.portal_id %>" data-model="admin"><font><%= p.portal_id%></font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">Delete</button></li>
+              <li class="list-group-item clearfix" data-sid="<%=raw p.portal_id %>" data-model="admin"><font><%= p.portal_id%></font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">刪除</button></li>
             <% end %>
           </ul>
         </div>
       </div>
       <input type="text" id="admin" name="person"></input>
-      <button class="btn buttonadd" data-model="admin">Add</button>
+      <button class="btn buttonadd" data-model="admin">新增</button>
     </div>
   </div>
 
   <div class="tab-pane fade" id="addMember">
     <div class="input-group" id="memberlist">
-      <label>Add members (Only effective with membership)</label>
+      <label>新增會員至 <%= facility.name%> (作用於會員制度打開時)</label>
       <div class="container" style="display: inline">
         <div class="container" style="height: 70vh; overflow: auto;">
           <ul id="displaymember" class="list-group" style="width: 30vw;">
-            <li class="list-group-item list-group-item-info">Current members(id)</li>
+            <li class="list-group-item list-group-item-info">現有會員(id)</li>
             <% facility.allow_users.each do |p|%>
-              <li class="list-group-item clearfix" data-sid="<%=raw p.portal_id %>" data-model="member"><font><%= p.portal_id%></font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">Delete</button></li>
+              <li class="list-group-item clearfix" data-sid="<%=raw p.portal_id %>" data-model="member"><font><%= p.portal_id%></font><button class="btn btn-xs btn-warning pull-right self-delete" type="button">刪除</button></li>
             <% end %>
           </ul>
         </div>
       </div>
       <input type="text" id="member" name="person"></input>
-      <button class="btn buttonadd" data-model="member">Add</button>
+      <button class="btn buttonadd" data-model="member">新增</button>
     </div>
   </div>
 
@@ -42,12 +42,12 @@
   <%= form_tag '/facilities/'+params[:id]+'/edit/more' ,method: :put do%>
     <%= hidden_field_tag 'more', 'description' %>
     <div class="form-group" >
-      <label>Change Description</label>
+      <label>更改設施 <%=facility.name  %> 相關描述</label>
       <div class="container" style="display: inline;">
         <div style="width: 40vw ;">
           <textarea class="form-control" rows="6" placeholder="<%= facility.description%>" name="content"></textarea>
           <br>
-          <button class="btn btn-primary" type="submit">Submit</button>
+          <button class="btn btn-primary" type="submit">提交</button>
         </div>
       </div>
     </div>
@@ -57,9 +57,9 @@
 
 <% content_for :more do %>
   <ul class="nav navbar-nav nav-pills navbar-btn">
-    <li class="active"><a data-toggle="tab" class="active" href="#addAdm">AddAdm</a></li>
-    <li><a data-toggle="tab" href="#addMember">AddMember</a></li>
-    <li><a id="destab" data-toggle="tab" href="#changeDescription">ChangeDescription</a></li>
+    <li class="active"><a data-toggle="tab" class="active" href="#addAdm">修改管理員</a></li>
+    <li><a data-toggle="tab" href="#addMember">修改會員</a></li>
+    <li><a id="destab" data-toggle="tab" href="#changeDescription">更改描述</a></li>
   </ul>
 <% end %>
 

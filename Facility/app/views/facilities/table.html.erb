@@ -9,6 +9,7 @@
     <% data_day = DateTime.new(year, month, day).next_day(i) %>
 <% else %>
   <% data_day = DateTime.new(year, params[:month].to_i, params[:day].to_i) %>
+  <% next_week_find = ((DateTime.now.to_time - data_day.to_time)/1.day).to_i / 7 %>
 <% end %>
 <% i = 0 %>
     <div id="week">

@@ -1,20 +1,41 @@
 <div class="tab-content">
 <div class="tab-pane fade in active" id="list" style="padding-top:25px; width:90vw; height:101vh;">
-  <h2>Facilities List</h2>
+    <h2>設施清單</h2>
+    <div class="row">
+      <div class="col-md-3">
+      <input class="form-control col-md-2" type="text" name="content" id="search-content" placeholder="搜尋..."></input>
+      </div>
+      <div class="col-sm-2">
+      <select class="form-control" id="key-word" name="key-word">
+        <option value="name">名稱</option>
+        <option value="description">描述</option>
+        <option value="id">編號</option>
+      </select>
+      </div>
+    </div>
+  <div id="facilities-list">
   <table class="table table-hover" style="width:100%; max-height:100%;">
   <thead>
     <tr>
       <th></th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Verification</th>
-      <th>MemberLimit</th>
+      <th>名稱</th>
+      <th>描述</th>
+      <th>審核制</th>
+      <th>會員制</th>
     </tr>
   </thead>
   <tbody>
-    <% facilities = Facility.limit(10) %>
+    <% if params[:page_list].present? %>
+      <% offset = (params[:page_list].to_i-1)*10  %>
+    <% elsif !(params[:page_list] =~ /[0-9]*/) %>
+      <% params[:page_list]=="donotfuckmeplease" %>
+      <% offset = 0 %>
+    <% else %>
+      <% offset = 0 %>
+    <% end %>
+    <% facilities = Facility.limit(10).offset(offset) %>
     <% facilities.each do |t| %>
-      <tr class='clickable-row' data-href="/facilities/<%= t.id%>">
+      <tr type="button"  class='clickable-row' data-href="/facilities/<%= t.id%>?next_week=0">
       <th><%= t.id %></th>
       <td><%= t.name.to_s %></td>
       <td><%= t.description.to_s %></td>
@@ -23,12 +44,25 @@
       </tr>
     <% end %>
   </tbody>
-</table>
+  </table>
+  </div>
+<nav>
+  <ul class="pagination">
+    <li <% if offset == 0 %>class="disabled"<% end %> >
+      <a href="/facilities?page_list=<%raw params[:page_list].to_i - 1 %>" ><span>&laquo;</span></a>
+    </li>
+    <% page_limit = Facility.count / 10 + 1 %>
+    <% for i in 1..page_limit %>
+      <li><a href="/facilities?page_list=<%=raw i %>"><%= i %></a></li>
+    <% end %>
+    <li <% if page_limit <= offset/10+1  %> class="disabled" <% end %>><a href="/facilities?page_list=<%=raw params[:page_list].to_i+1 %>">&raquo;</a></li>
+  </ul>
+</nav>
 </div>
 <div class="tab-pane fade" id="admin" style="width:90vw; height:101vh; padding-top:25px;">
-  <h2>Administration List</h2>
+  <h2>管理清單</h2>
   <% if current_user.present?%>
-    <table class="table table-hover" style="width:100%; max-height:100%;">
+    <table id="list-table" class="table table-hover" style="width:100%; max-height:100%;">
       <thead>
         <tr>
           <th></th>
@@ -59,15 +93,15 @@
   <% end %>
 </div>
 <div class="tab-pane fade" id="create" style="width:90vw; height:101vh; padding-top:25px;">
-  <h2>New Facilities</h2>
+  <h2>新增設施</h2>
   <%=render 'new' if current_user.present? %>
   <p><%= "Please login first to create your own facilities..." if current_user.nil? %></p>
 </div>
 <% content_for :index do %>
   <ul class="nav navbar-nav nav-pills navbar-btn">
-    <li class="active"><a data-toggle="tab" class="active" href="#list" id="listtab">List </a></li>
-    <li><a data-toggle="tab" href="#admin" id="admintab">Admin</a></li>
-    <li><a data-toggle="tab" href="#create" id="newtab"> New </a></li>
+    <li class="active"><a data-toggle="tab" class="active" href="#list" id="listtab">清單</a></li>
+    <li><a data-toggle="tab" href="#admin" id="admintab">管理</a></li>
+    <li><a data-toggle="tab" href="#create" id="newtab">新增</a></li>
   </ul>
 <% end %>
 <div class="modal fade" id="adminmodal">
@@ -96,10 +130,10 @@ $(document).on('turbolinks:load', function(){
 //        $(document).ready()
     }})
   })
-
-  $(".clickable-row").click(function(){
-    window.location=$(this).data('href')
-  })
+  $(document).on('click','.clickable-row' ,function(){window.location=$(this).data('href')})
+//  $(".clickable-row").click(function(){
+//    window.location=$(this).data('href')
+//  })
 })
   </script>
 
@@ -117,19 +151,19 @@ $(document).on('turbolinks:load', function(){
 
 <% if flash[:notice] == 'unlogin' %>
   <script>
-    alert('Please login first.')
+    alert('Please login first.　請先登入')
   </script>
 <% end %>
 
 <% if flash[:notice] == 'limit' %>
   <script>
-    alert('The user is not allowed for the membership of the facility.')
+    alert('The user is not allowed for the membership of the facility.　您並非該設施的核准的成員')
   </script>
 <% end %>
 
 <% if flash[:notice] == 'membership' %>
   <script>
-    alert('Membership switched.')
+    alert('Membership switched.　會員制成功切換')
     $(document).on('turbolinks:load', function(){
       $('#admintab').trigger('click')
     })
@@ -138,7 +172,7 @@ $(document).on('turbolinks:load', function(){
 
 <% if flash[:notice] == 'board' %>
   <script>
-    alert('The bulletin has been changed.')
+    alert('The bulletin has been changed. 公告修改成功')
     $(document).on('turbolinks:load', function(){
       $('#admintab').trigger('click')
     })
@@ -192,4 +226,14 @@ $(document).on("turbolinks:load", function(){
     }
   )
 })
+  $('#search-content').keypress(function(e){
+    if(e.which==13){
+      $.ajax({url : '/facilities',
+        data : {search : true, content : $(this).val(), key : $('#key-word option:selected').val()},
+        success : function(res){$('#facilities-list').html(res).promise().done(function(){$(document).ready()})
+        },
+        error: function(){alert("伺服器發生錯誤")}
+      })
+    }
+  })
 </script>
