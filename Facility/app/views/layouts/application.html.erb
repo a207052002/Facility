@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <% content_for :logined do %>
-  <ul class="col-sm-1  nav navbar-right">
+  <ul class="col-sm-4  nav navbar-right">
+    <li class="nav-item navbar-right"><a  href="/instruction" style="color: #888888; font-size:20px;">使用說明</a></li>
   <li class="nav-item  dropdown navbar-right">
     <a class="btn btn-outline-secondary navbar-btn dropdown-toggle" href="#" role="button" id="logmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #888888; font-size:20px; font-weight: 500; border-radius:4px; border:0px; padding: 1vh;" ><%=current_user %><span class="caret"></span></a>
     <ul class="dropdown-menu" aria-labelledby="logmenu">

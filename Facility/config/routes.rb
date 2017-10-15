@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   put '/facilities/:id/edit/more' => "facilities#more_edit"
   delete '/facilities/:id/edit/more' => "facilities#more_delete"
   get '/facilities/:id/edit/table' => "facilities#edit_table"
+  get '/instruction' => "facilities#instruction"
 
   match 'auth/ncu_portal_open_id/callback', to: 'sessions#create', via: [:get, :post]
   get 'login' => "sessions#login"

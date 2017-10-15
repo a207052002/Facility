@@ -89,4 +89,6 @@ class FacilitiesController < ApplicationController
 
   def edit_table
   end
+  def instruction
+  end
 end

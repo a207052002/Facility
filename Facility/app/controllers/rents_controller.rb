@@ -3,7 +3,51 @@ class RentsController < ApplicationController
   layout false ,only: [:info]
   layout false ,only: [:controllpane]
   def new
-    if params[:cartrent].present?
+    if params[:largerent]
+      facility = Facility.find_by(id: params[:id])
+      rents = Facility.find_by(id: params[:id]).rents
+      date = params[:day]
+      reg = /^(.*)\/(.*)\/(.*)/
+      day = DateTime.new(date[reg,1].to_i,date[reg,2].to_i,date[reg,3].to_i)
+      now = DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day)
+      next_week = ((day.to_time - now.to_time)/1.day).to_i / 7
+      if params[:cartrent].to_i > 1
+        serial = "%d" % (Time.now.to_f*10000)
+        cart_verify_or_not = true
+      elsif
+        serial = '000000'
+        cart_verify_or_not = false
+      end
+      days = []
+      times = []
+      puts '---------------------------------------------------'
+      puts
+      for k in 1..params[:weekly].to_i
+        puts '------------------------'
+        puts week_offset = (k-1)*7
+        puts (day  + week_offset.day)
+        puts '------------------------'
+        days.push(day  + week_offset.day)
+      end
+      puts
+      puts '---------------------------------------------------'
+      for i in  params[:period].to_i..(params[:period].to_i+params[:cartrent].to_i)
+        times.push(i.to_s(16))
+      end
+      if facility.rents.where(day: days, period: times).length == 0
+        days.each do |the_day|
+          times.each do |time|
+            facility.rents.create(user_id: current_user,day: the_day, period: time, cart_serial: serial, cart: cart_verify_or_not)
+          end
+          serial = (serial.to_d + 1).to_s.chop.chop if serial != '000000'
+        end
+        redirect_to "/facilities/#{params[:id]}?next_week=#{next_week}", notice: 'success'
+        return
+      else
+        redirect_to "/facilities/#{params[:id]}?next_week=#{next_week}", notice: 'repeat'
+        return
+      end
+    elsif params[:cartrent].present?
       serial = "%d" % (Time.now.to_f*10000)
       facility = Facility.find_by(id: params[:id])
       rents = Facility.find_by(id: params[:id]).rents
@@ -36,6 +80,7 @@ class RentsController < ApplicationController
       reg = /^(.*)-(.*)-(.*)-(.*)/
       facility = Facility.find_by(id: params[:id])
       rents = facility.rents
+      if params[:periods].present?
       params[:periods].each do |period|
         day = DateTime.new(period[reg,1].to_i,period[reg,2].to_i,period[reg,3].to_i)
         period = period[reg,4].to_i(16).to_s
@@ -57,7 +102,8 @@ class RentsController < ApplicationController
       params[:periods].each do |period|
         day = DateTime.new(period[reg,1].to_i,period[reg,2].to_i,period[reg,3].to_i)
         period = period[reg,4]
-        rents.create(day: day, period: period.to_i.to_s(16).upcase, description: params[:description], user_id: current_user)
+        rents.create(day: day, period: period.to_i.to_s(16), description: params[:description], user_id: current_user)
+      end
       end
       redirect_to "/facilities/#{params[:id]}?next_week=" + next_week.to_s, notice: 'success'
     end

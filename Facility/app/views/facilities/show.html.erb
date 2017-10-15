@@ -205,11 +205,11 @@ div class="container" style="padding-top: 25px;">
         <p id="user" class="well"></p>
         <%= form_tag('/facilities/' + params[:id].to_s + '/rent', method: :post) do %>
           <div class="input-group">
-            <label for="day"><b>Day</b></label>
+            <label for="day"><b>日</b></label>
             <input type="text" class="form-control" id="day" name="day" value=""></input>
           </div>
           <div class="input-group">
-            <span><b>Time</b></span>
+            <span><b>時段</b></span>
             <select class="form-control" id="period" name="period">
               <% for i in 1..15 %>
                 <option <%=raw 'id=' + '"' + i.to_s + '"' %>><%= i.to_s(16).upcase %></option>
@@ -217,14 +217,14 @@ div class="container" style="padding-top: 25px;">
             </select>
           </div>
           <div class="form-group">
-            <label for="des">Despriction</label>
+            <label for="des">申請事由</label>
             <textarea class="form-control" placeholder="Simple description about usage..." type="text" name="description" rows="5" id="des"></textarea>
           </div>
           <div class="checkbox">
             <label><input type="checkbox" id="largerent" name="largerent" value="true">連借數周(注意: 周之間可拆散審核, 最大: 9)</input></label>
             <div class="row">
             <div class="col-xs-2">
-              <input  class="form-control" type="number" min="1" max="9" id="weekly" name="weekly">
+              <input  class="form-control" type="number" min="1" max="9" id="weekly" onkeydown="return false"  name="weekly">
             </div>
             </div>
           </div>
@@ -238,8 +238,8 @@ div class="container" style="padding-top: 25px;">
             </select>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+            <button type="submit" class="btn btn-primary">提交</button>
           </div>
         <% end %>
       </div>
@@ -273,7 +273,7 @@ div class="container" style="padding-top: 25px;">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">關閉</span></button>
         <h4 class="modal-title">Rent change</h4>
       </div>
       <div class="modal-body">
@@ -281,9 +281,9 @@ div class="container" style="padding-top: 25px;">
         <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :put, class: 'form-controll') do%>
           <div class="form-group">
           <input id="change_rent_day_change" name="rent_day" type="hidden" value=""/>
-            <label>Change description</label><br>
+            <label>更改事由</label><br>
             <textarea type="text" rows="6" name="description"></textarea><br>
-            <button class="btn btn-info">Change</button>
+            <button class="btn btn-info">更動</button>
           </div>
         <% end %>
       </div>
@@ -292,7 +292,7 @@ div class="container" style="padding-top: 25px;">
         <div class="col-sm-2">
         <%=form_tag('/facilities/' + params[:id].to_s + '/rent', method: :delete, class: 'form-controll') do%>
           <input id="change_rent_day_close" name="rent_day" type="hidden" value=""/>
-          <button class="btn btn-warning">Delete</button>
+          <button class="btn btn-warning">刪除租用</button>
         <% end %>
         </div>
       </div>

@@ -42,8 +42,8 @@
             <tr>
               <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day1 = facility.rents.where(day: d1, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d1, period: j, verified: true).nil? && facility_verify%>
+                <% if (day1 = facility.rents.where(day: d1, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d1, period: j.to_s(16), verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
@@ -58,8 +58,8 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==2%>" data-wday="<%=d2.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day2 = facility.rents.where(day: d2, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d2, period: j, verified: true).nil? && facility_verify%>
+                <% if (day2 = facility.rents.where(day: d2, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d2, period: j.to_s(16), verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
@@ -74,8 +74,8 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==3%>" data-wday="<%=d3.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day3 = facility.rents.where(day: d3, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d3, period: j, verified: true).nil? && facility_verify%>
+                <% if (day3 = facility.rents.where(day: d3, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d3, period: j.to_s(16), verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
@@ -90,8 +90,8 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==4%>" data-wday="<%=d4.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day4 = facility.rents.where(day: d4, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d4, period: j, verified: true).nil? && facility_verify %>
+                <% if (day4 = facility.rents.where(day: d4, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d4, period: j.to_s(16), verified: true).nil? && facility_verify %>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
@@ -106,8 +106,8 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==5%>" data-wday="<%=d5.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day5 = facility.rents.where(day: d5, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d5, period: j, verified: true).nil? && facility_verify%>
+                <% if (day5 = facility.rents.where(day: d5, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d5, period: j.to_s(16), verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
@@ -122,8 +122,8 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==6%>" data-wday="<%=d6.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day6 = facility.rents.where(day: d6, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d6, period: j, verified: true).nil? && facility_verify%>
+                <% if (day6 = facility.rents.where(day: d6, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d6, period: j.to_s(16), verified: true).nil? && facility_verify%>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
@@ -138,8 +138,8 @@
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==7%>" data-wday="<%=d7.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
-                <% if (day7 = facility.rents.where(day: d7, period: j)).present?%>
-                  <% if facility.rents.find_by(day: d7, period: j, verified: true).nil? && facility.verify %>
+                <% if (day7 = facility.rents.where(day: d7, period: j.to_s(16))).present?%>
+                  <% if facility.rents.find_by(day: d7, period: j.to_s(16), verified: true).nil? && facility.verify %>
                     data-rented="review" style="background-color: #FFAAAA"
                   <% else %>
                     data-rented="true" style="background-color: #AAFFAA"
