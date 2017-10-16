@@ -20,6 +20,8 @@ class CreateRegister < ActiveRecord::Migration[5.0]
 
     create_table :users do |t|
       t.string :portal_id  ,  null: false
+      t.string :mail, default: ""
+      t.boolean :notify, default: false
     end
 
     create_table :rents do |t|
@@ -32,6 +34,7 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.boolean :verified, default: false
       t.boolean :large, default: false
       t.boolean :cart, default: false
+      t.boolean :notified, default: false
       t.string :cart_serial, default: "000000"
     end
 
@@ -41,5 +44,12 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.integer :month , null: false
       t.references :rent
     end
+
+    create_table :mailverifies do |t|
+      t.string :token, null: false
+      t.string :portal_id, null: false
+      t.string :mail, null: false
+    end
+
   end
 end

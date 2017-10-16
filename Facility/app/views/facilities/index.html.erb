@@ -236,4 +236,20 @@ $(document).on("turbolinks:load", function(){
       })
     }
   })
+
+
 </script>
+
+<% if flash[:notice]=="mail_success" %>
+  <script>
+    alert('mail 認證成功, 請至通知設定確認')
+  </script>
+<% elsif flash[:notice]=="verify_failed_token" %>
+  <script>
+    alert('不合法的認證途徑')
+  </script>
+<% elsif flash[:notice]=="verify_failed_login" %>
+  <script>
+    alert('帳戶錯誤')
+  </script>
+<% end %>

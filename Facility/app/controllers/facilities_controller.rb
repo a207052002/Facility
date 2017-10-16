@@ -91,4 +91,31 @@ class FacilitiesController < ApplicationController
   end
   def instruction
   end
+
+  def mail_verify
+    info = Mailverify.find_by(portal_id: current_user)
+    if info.present?
+      if params[:token] == info.token
+        User.find_by(portal_id: current_user).update(mail: info.mail)
+        redirect_to '/facilities', notice: 'mail_success'
+      else
+        redirect_to '/facilities', notice: 'verify_failed_token'
+      end
+    else
+      redirect_to '/facilities', notice: 'verify_failed_login'
+    end
+  end
+
+  def mail_verify_request
+    mail = NotifyMailer.mail_verify(params[:mail], current_user)
+    mail.deliver_now! if mail.present?
+  end
+
+  def notify_switch
+    user = User.find_by(portal_id: current_user)
+    if user.mail.present?
+      user.notify = !user.notify
+      user.save!
+    end
+  end
 end

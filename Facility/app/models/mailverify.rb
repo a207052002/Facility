@@ -1,0 +1,2 @@
+class Mailverify < ApplicationRecord
+end
