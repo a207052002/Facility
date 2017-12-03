@@ -14,7 +14,7 @@ class RentsController < ApplicationController
       if params[:cartrent].to_i > 1
         serial = "%d" % (Time.now.to_f*10000)
         cart_verify_or_not = true
-      elsif
+      else
         serial = '000000'
         cart_verify_or_not = false
       end

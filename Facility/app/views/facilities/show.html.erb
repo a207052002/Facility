@@ -223,9 +223,9 @@ div class="container" style="padding-top: 25px;">
           <div class="checkbox">
             <label><input type="checkbox" id="largerent" name="largerent" value="true">連借數周(注意: 周之間可拆散審核, 最大: 18)</input></label>
             <div class="row">
-            <div class="col-xs-2">
-              <input  class="form-control" type="number" min="1" max="18" id="weekly" onkeydown="return false"  name="weekly">
-            </div>
+              <div class="col-xs-2">
+                <input value="1" class="form-control" type="number" min="1" max="18" id="weekly" onkeydown="return false"  name="weekly">
+              </div>
             </div>
           </div>
           <div class="input-group">
@@ -247,8 +247,7 @@ div class="container" style="padding-top: 25px;">
   </div>
 </div>
 
-
-<div class="modal fade" id="queue" role="dialog">
+<div class="modal fade" id="queue-modal">
 </div>
 
 <div class="modal fade" id="infomation" role="dialog">
@@ -499,8 +498,8 @@ $(document).on('turbolinks:load', function(){
           $.ajax({url: '/facilities/'+ '<%=raw params[:id] %>'+'/rent',
             data: {time: $(this).data('time'),
               day: $(this).data('wday')},
-            success: function(res){$('#queue').html(res)
-              $('#queue').modal('show')
+            success: function(res){$('#queue-modal').html(res)
+              $('#queue-modal').modal('show')
             }})
         }
         else if(login != ""){
@@ -614,11 +613,30 @@ $(document).on('turbolinks:load', function(){
     }
   )
 
+  $(document).on('click', '.print-btn',
+    function() {
+      window.open('/facilities/print?id='+$(this).data('rid'))
+    }
+  )
+
+  $(document).on('click', '.sub-des', function() {
+    $("#des-change").submit()
+  })
+
+  $(document).on('click', '.queue-btn', function() {
+    $("#in-queue").submit()
+  })
+
 })
   <% if(params[:notice] == 'failed') %>
     <script>
       function(){alert("Please don't fuck me")}()
     </script>
   <% end %>
+
+
 </script>
+
+
+
 

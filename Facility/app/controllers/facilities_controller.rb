@@ -1,5 +1,5 @@
 class FacilitiesController < ApplicationController
-  layout false, only: [:table,:edit,:edit_table]
+  layout false, only: [:table,:edit,:edit_table, :appform]
   def index
     if params[:search]
       render "search", layout: false
@@ -88,6 +88,8 @@ class FacilitiesController < ApplicationController
   end
 
   def edit_table
+    rents = Facility.find_by(id: params[:id]).rents.where(saw: false)
+    rents.update(saw: true) if rents.present?
   end
   def instruction
   end
@@ -118,4 +120,8 @@ class FacilitiesController < ApplicationController
       user.save!
     end
   end
+
+  def appform
+  end
+
 end

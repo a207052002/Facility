@@ -56,13 +56,5 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_url_options = { host: "http://localhost:3000" }
-  config.action_mailer.smtp_settings = {
-    address: "smtp.cc.ncu.edu.tw",
-    port: "587",
-    domain: "cc.ncu.edu.tw",
-    authentication: "plain",
-    user_name: "center21@cc.ncu.edu.tw",
-    password: "smallkid123",
-    enable_starttls_auto: true
-  }
+  config.action_mailer.smtp_settings = config_for(:mail_setting).symbolize_keys
 end

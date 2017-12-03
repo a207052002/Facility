@@ -1,3 +1,12 @@
+<% if current_user %>
+<% if (user = User.find_by(portal_id: current_user)).facilities.present? %>
+<% notify = 0 %>
+<% User.find_by(portal_id: current_user).facilities.each do |f| %>
+  <% notify += f.rents.where(saw: false).count %>
+<% end %>
+<% end %>
+<% end %>
+
 <div class="tab-content">
 <div class="tab-pane fade in active" id="list" style="padding-top:25px; width:90vw; height:101vh;">
     <h2>設施清單</h2>
@@ -79,7 +88,9 @@
         <% if User.find_by(portal_id: current_user).present? %>
         <% User.find_by(portal_id: current_user).facilities.each do |t|  %>
           <tr class='clickable-adm' data-href="/facilities/<%= t.id%>/edit" data-id="<%=t.id %>" >
-          <th><%= t.id %></th>
+          <% f_notify = t.rents.where(saw: false).count %>
+          <th class="notify-parent"><% if(f_notify>0) %><span class="notify-num-table"><%= f_notify %></span><% end %>
+          <%= t.id %></th>
           <td><%= t.name.to_s %></td>
           <td><%= t.description.to_s %></td>
           <td><%= t.verify.to_s %></td>
@@ -99,9 +110,15 @@
 </div>
 <% content_for :index do %>
   <ul class="nav navbar-nav nav-pills navbar-btn">
-    <li class="active"><a data-toggle="tab" class="active" href="#list" id="listtab">清單</a></li>
-    <li><a data-toggle="tab" href="#admin" id="admintab">管理</a></li>
-    <li><a data-toggle="tab" href="#create" id="newtab">新增</a></li>
+    <li class="active">
+      <a data-toggle="tab" class="active notify-parent" href="#list" id="listtab">清單</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#admin" class="notify-parent" id="admintab"><% if(notify!=0 && notify.present?) %><span class="notify-num"><%=notify%></span><% end %>管理</a>
+    </li>
+    <li>
+      <a data-toggle="tab" href="#create" id="newtab">新增</a>
+    </li>
   </ul>
 <% end %>
 <div class="modal fade" id="adminmodal">

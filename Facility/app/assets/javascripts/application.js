@@ -16,3 +16,4 @@
 //= require turbolinks
 //turbolinks
 //=require jquery-ui
+//=require jQuery.print.js

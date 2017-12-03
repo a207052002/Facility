@@ -157,3 +157,44 @@ page {
   margin-bottom: 0.5cm;
   box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
 }
+
+.two-column {
+  width: 50%;
+  border: 1px solid black;
+}
+.four-column {
+  width: 25%;
+  border: 1px solid black;
+}
+
+.cell-mid {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.notify-num {
+  position : absolute;
+  background-color : #fa3e3e;
+  border-radius: 20%;
+  color : white;
+  font-size : 6px;
+  padding : 0px 6px;
+  top : 2px;
+  left : 2px;
+}
+
+
+.notify-num-table {
+  position : absolute;
+  background-color : #fa3e3e;
+  border-radius: 30%;
+  color : white;
+  font-size : 8px;
+  padding : 1px 5px;
+  top : -6px;
+  left : -6px;
+}
+
+.notify-parent {
+  position : relative;
+}

@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20171015153235) do
     t.boolean  "large",       default: false
     t.boolean  "cart",        default: false
     t.boolean  "notified",    default: false
+    t.boolean  "saw",         default: false
     t.string   "cart_serial", default: "000000"
     t.index ["facility_id"], name: "index_rents_on_facility_id"
   end

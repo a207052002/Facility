@@ -35,6 +35,7 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.boolean :large, default: false
       t.boolean :cart, default: false
       t.boolean :notified, default: false
+      t.boolean :saw, default: false
       t.string :cart_serial, default: "000000"
     end
 

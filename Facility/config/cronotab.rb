@@ -29,4 +29,4 @@ class MailTask
   end
 end
 
-Crono.perform(MailTask).every 5.seconds
+Crono.perform(MailTask).every 3600.seconds
