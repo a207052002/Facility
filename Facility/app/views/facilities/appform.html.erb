@@ -8,6 +8,7 @@
 <% else %>
   <% periods = rent.period %>
 <% end %>
+<% day = rent.day %>
 <html>
   <head>
     <title>Facility</title>
@@ -17,43 +18,61 @@
   </head>
 <body id="table-print" style="padding: 20px 20px 20px 20px; width: 21cm; height: 29.7cm;">
   <table id="appform" style="width: 100%; height: 100%; border-collapse: collapse; border: 1px solid black;">
-    <tr style="height: 10%; width:100%;">
+    <tr style="height: 5%; width:100%;">
       <th colspan="4" border: 1px solid black;><h3 class="cell-mid">NCU Register 申請單</h3></th>
     </tr>
-    <tr style="height: 12%; width:100%;">
-      <td colspan="2"  class="two-column"><h4 class="cell-mid">申請人<h4></td><td colspan="2"  class="two-column"><h4 class="cell-mid"><%= current_user %></h4></td>
+    <tr style="height: 1%; width:100%;">
+      <td colspan="4"  class="two-column"><h4 class="cell-mid">注意：申請借用微電腦教室者,請詳閱下列微電腦教室使用規則，簽名借用，即須遵守<h4></td>
     </tr>
-    <tr style="height: 12%; width:100%;">
-      <td colspan="2"  class="two-column"><h4 class="cell-mid">申請單位</h4></td><td colspan="2"  class="two-column"><h4 class="cell-mid"><%= facility.users.first.portal_id %></h4></td>
-    <tr style="height: 12%; width:100%;">
+    <tr style="height: 1%; width:100%;">
+      <td colspan="4"  class="two-column"><h4 class="cell-mid">使用說明：
+ <br>1. 申請教室，在借用時段必須有任課教師、助教或活動負責人、輔導員
+ <br>在場指導，不可只留學生或學員在教室內活動。
+ <br>2. 教室申請人請於每次開課前十分鐘至電算中心辦公室登記借用，再請
+ <br>中心人員開門。
+ <br>3. 教室申請人須負責維持借用教室各項設備之完整，下課後並請關閉每
+ <br>部 PC 之電源。
+ <br>4. 教室申請人須負責維持借用教室環境之整潔，教室內嚴禁飲食。
+ <br>5. 教室申請人須負責於下課後確實關閉教室門戶，以維設備安全。
+ <br>6. 若有額外借用之設備，須於課後負責收妥並交還給中心人員。
+ <br>7. 借用教室不得任意拆卸機殼及其內之設備。
+ <br>8. 借用單位若有違上列規定，造成借用教室內各項設備之遺失或毀損,中
+ <br>心得逕行停止繼續借用該教室，並得請求賠償。 <h4></td>
+    </tr>
+    <tr style="height: 5%; width:100%;">
+      <td colspan="2"  class="two-column"><h4 class="cell-mid">借出人</h4></td><td colspan="2"  class="two-column"><h4 class="cell-mid"><%= facility.users.first.portal_id %></h4></td>
+    <tr style="height: 5%; width:100%;">
       <td colspan="2"  class="two-column"><h4 class="cell-mid">設施名稱(ID)</h4></td><td colspan="2"  class="two-column"><h4 class="cell-mid"><%= facility.name %></h4></td>
     </tr>
-    <tr style="height: 12%; width:100%;">
-      <td class="four-column"><h4 class="cell-mid">申請時段</h4></td>
-      <td class="four-column"><h4 class="cell-mid"><%= periods %></h4></td>
+    <tr style="height: 5%; width:100%;">
+      <td class="four-column"><h4 class="cell-mid">申請日期/時段</h4></td>
+      <td class="four-column"><h4 class="cell-mid"><%=day.strftime("%Y-%m-%d\n") %><br><%= periods %></h4></td>
       <td class="four-column"><h4 class="cell-mid">提交日期</h4></td>
       <td class="four-column"><h4 class="cell-mid"><%= rent.created_at.strftime("%Y-%m-%d %H:%M:%S")%></h4></td>
     </tr>
-    </tr>
-    <tr style="height: 12%; width:100%;">
+    <tr style="height: 5%; width:100%;">
       <td class="four-column"><h4 class="cell-mid">核可單位(組長/主任)</h4></td>
       <td class="four-column"></td>
       <td class="four-column"><h4 class="cell-mid">承辦人簽章</h4></td>
       <td class="four-column"></td>
     </tr>
-    <tr style="height: 12%; width:100%;">
+    <tr style="height: 5%; width:100%;">
       <td class="four-column"><h4 class="cell-mid">助教簽名</h4></td>
       <td class="four-column"></td>
       <td class="four-column"><h4 class="cell-mid">老師簽章</h4></td>
       <td class="four-column"></td>
     </tr>
-    <tr style="height: 12%; width:100%;">
-      <td colspan="2" class="two-column"><h4 class="cell-mid">申請人電話</h4></td>
-      <td colspan="2" class="two-column"></td>
+    <tr style="height: 5%; width:100%;">
+      <td class="four-column"><h4 class="cell-mid">使用軟體</h4></td>
+      <td class="four-column"></td>
+      <td class="four-column"><h4 class="cell-mid">其他說明</h4></td>
+      <td class="four-column"></td>
     </tr>
-    <tr style="height: 12%; width:100%;">
-      <td colspan="2" class="two-column"><h4 class="cell-mid">備註</h4></td>
-      <td colspan="2" class="two-column"></td>
+    <tr style="height: 5%; width:100%;">
+      <td class="four-column"><h4 class="cell-mid">申請人</h4></td>
+      <td class="four-column"></td>
+      <td class="four-column"><h4 class="cell-mid">申請人電話</h4></td>
+      <td class="four-column"></td>
     </tr>
 </table>
   <button class="printstart btn"> 列印 </button>

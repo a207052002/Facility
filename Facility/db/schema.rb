@@ -74,9 +74,9 @@ ActiveRecord::Schema.define(version: 20171015153235) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string  "portal_id",                 null: false
+    t.string  "portal_id",                null: false
     t.string  "mail",      default: ""
-    t.boolean "notify",    default: false
+    t.boolean "notify",    default: true
   end
 
 end

@@ -65,7 +65,7 @@
       <div class="modal-body">
         <label>點擊開關通知功能</label>
         <button data-status=<% if the_user.notify%> "true" <% else %> "false" <% end %> class="btn notify-switch<% if !the_user.notify %> btn-info <% else %> btn-warnning <% end %> <%=raw 'disabled' if !the_user.mail.present? %> "><% if !the_user.notify %>通知關閉中<% else %>通知開啟中<%end %></button>
-        <p>這會讓設施有人申請租借時定時寄信至您的信箱, 必須設定並認證信箱才能使用</p>
+        <p>這會讓您管理的設施有人申請租借時定時寄信至您的信箱, 必須設定並認證信箱才能使用</p>
         <br>
         <br>
         <p>您的電子郵件地址: <% if the_user.mail.present? %> <%= the_user.mail %>  <% else %> 您尚未設定 e-mail <% end %></p>
@@ -73,7 +73,7 @@
           <div class="form-group">
             <label for="email">修改/新增 e-mail</label>
             <input type="email" class="form-control" id="mail"></input>
-            <button type="button" class="btn btn-default" id="mail-verify-btn">認證</button>
+            <button type="button" class="btn btn-default mail-verify-btn">認證</button>
           </div>
         </form>
       </div>
@@ -93,13 +93,13 @@
     }
   )
 
-$(document).on("click", "#mail-verify-btn", function(){
+$(document).on("click", ".mail-verify-btn", function(){
   mail_reg = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   if(mail_reg.test($("#mail").val())){
     $.post({url: '/facilities/mailverifyRequest',
       data : {mail: $("#mail").val()},
       success: function(){
-        alert('已發送認證郵件至您的信箱, 請確認')
+        alert('已發送認證郵件至您的信箱, 郵件會於數分鐘內寄達')
         location.reload()
       },
       error: function(){

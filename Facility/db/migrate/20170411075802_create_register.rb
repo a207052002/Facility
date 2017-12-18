@@ -21,7 +21,7 @@ class CreateRegister < ActiveRecord::Migration[5.0]
     create_table :users do |t|
       t.string :portal_id  ,  null: false
       t.string :mail, default: ""
-      t.boolean :notify, default: false
+      t.boolean :notify, default: true
     end
 
     create_table :rents do |t|

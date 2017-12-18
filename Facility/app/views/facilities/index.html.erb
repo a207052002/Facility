@@ -1,10 +1,12 @@
 <% if current_user %>
-<% if (user = User.find_by(portal_id: current_user)).facilities.present? %>
-<% notify = 0 %>
-<% User.find_by(portal_id: current_user).facilities.each do |f| %>
-  <% notify += f.rents.where(saw: false).count %>
-<% end %>
-<% end %>
+  <% if User.find_by(portal_id: current_user).present?%>
+    <% if (user = User.find_by(portal_id: current_user)).facilities.present? %>
+    <% notify = 0 %>
+    <% User.find_by(portal_id: current_user).facilities.each do |f| %>
+    <% notify += f.rents.where(saw: false).count %>
+    <% end %>
+  <% end %>
+  <% end %>
 <% end %>
 
 <div class="tab-content">
@@ -127,6 +129,7 @@
   <script>
 $(document).on('turbolinks:load', function(){
   $(".clickable-adm").click(function() {
+    window.week = 0
     let the_row = $(this)
     window.nowadm = $(this)
     $.ajax( { url :$(this).data('href'), success: function(res){
@@ -204,6 +207,45 @@ $(document).on('turbolinks:load', function(){
 
   <script>
 $(document).on("turbolinks:load", function(){
+
+window.week=0
+  $(document).on('click', '.next-edit',
+    function(){
+      console.log('ttt')
+      console.log(window.week)
+      window.week = window.week + 1
+      let theDate = { "week" : window.week}
+      $.ajax("facilities/" + window.admin_id + "/edit/table", {success: function(response){
+        window.res = response
+        $('#edit-table').fadeOut("fast", function(){
+          $('#edit-table').html(window.res).promise().done(
+            function(){
+              $('#edit-table').fadeIn("slow")
+            }
+          );
+        });
+      }, data: theDate})
+    }
+  )
+
+  $(document).on('click', '.last-edit',
+    function() {
+      console.log(window.week)
+      window.week = window.week - 1
+      let theDate = { "week" : window.week}
+      $.ajax("facilities/"+ window.admin_id  + "/edit/table", {success: function(response){
+        window.res = response
+        $('#edit-table').fadeOut("fast", function(){
+          $('#edit-table').html(window.res).promise().done(
+            function(){
+              $('#edit-table').fadeIn("slow")
+              $(document).ready()
+            }
+          );
+        });
+      }, data: theDate})
+    }
+  )
   $(document).on("click", ".rent-delete",
     function() {
       window.the_btn = $(this)
@@ -270,3 +312,97 @@ $(document).on("turbolinks:load", function(){
     alert('帳戶錯誤')
   </script>
 <% end %>
+
+  <script>
+//deletadm
+$(document).on({click : function(){
+  window.pane_serial = $(this).data('serial')
+  window.singleId = $(this).data('rentid')
+  $.ajax({url : '<%=raw request.original_url%>' + "/" + window.admin_id +  "/rent/" + window.edit_id,
+          method : 'DELETE',
+          data : {count : window.operate, serial : window.pane_serial, single_id : window.rentId},
+          success: function(){
+            $.ajax({url: 'facilities/'+ window.admin_id +'/edit/table?week='+ window.week,
+                    success: function(r){
+                      $('#displayByTable').html(r).promise().done(function(){
+                        $(document).ready()})
+                    },
+                    error: function(){alert("Delete response error(Adm).")} })
+          },
+          error: function(){alert("Delete failed.")} })
+  }
+},'.table-delete')
+
+$(document).on({
+  click : function(){
+    window.pane_serial = $(this).data('serial')
+    window.singleId = $(this).data('rentid')
+    console.log(window.singleId)
+    $.ajax({url : '<%=raw request.original_url%>' + "/" + window.admin_id +  "/rent/" + window.edit_id,
+            method : 'PUT',
+            data : {serial : window.pane_serial,  single_id : window.singleId, permit : true},
+            success : function(){
+            $.ajax({url: 'facilities/'+ window.admin_id +'/edit/table?week='+ window.week,
+                      success : function(r){
+                        $('#displayByTable').html(r).promise().done(function(){
+                        })
+                      },
+                      error : function(){alert('Permit response error.')} })
+            },
+            error : function(){alert('Permit failed.')}})
+  }
+}, '.admtable-permit')
+
+</script>
+<script>
+  window.controllpane=false
+
+
+  $(document).on({
+    mouseenter: function(){
+      if($(this).data('serial')){
+        $('.' + $(this).data('serial') ).css('background-color', '#CCCCCC')
+      }else{
+        $(this).css('background-color', '#CCCCCC')
+      }
+    },
+    mouseleave: function(){
+      if($(this).data('serial')){
+        $('.' + $(this).data('serial')).each(function(i,v){
+          if($(v).data('review')=='review'){
+            $(v).css('background-color', '#FFAAAA')
+          }else if($(v).data('rent')=='multireview'){
+            $(v).css('background-color','#FFCCAA')
+          }else if($(v).data('review')==true){
+            $(v).css('background-color','#AAFFAA')
+          }else{
+            $(v).css('background-color','#FFFFFF')
+          }
+        })
+      }else{
+        if($(this).data('review')==true){
+          $(this).css('background-color','#AAFFAA')
+        }else if($(this).data('review')=='review'){
+          $(this).css('background-color','#FFAAAA')
+        }else if($(this).data('rent')=='multireview'){
+          $(this).css('background-color', '#FFCCAA')
+        }else{
+          $(this).css('background-color', '#FFFFFF')
+        }
+      }
+    },
+    click: function(){
+      window.edit_id = $(this).data('id')
+      if($('#controllpane').css('display')=='none'){
+        $('#rentcontroll')[0].click()
+      }
+      $('#controllpane').html('<h5>讀取中</h5>')
+      $.ajax({
+        url: '/facilities/'+ window.admin_id +'/rent/' + $(this).data('id'),
+        data: { type : 'controll' , week : window.week},
+        success: function(res){$('#controllpane').html(res)}
+      })
+    }
+  }, ".clickcelledit")
+
+</script>

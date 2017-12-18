@@ -1,16 +1,16 @@
 <% facility = Facility.find_by(id: params[:id]) %>
 <% rents = facility.rents %>
-<% wday = DateTime.now.next_day(params[:week].to_i*7).cwday %>
-<% year = DateTime.now.next_day(params[:week].to_i*7).year %>
-<% month = DateTime.now.next_day(params[:week].to_i*7).month %>
-<% day = DateTime.now.next_day(params[:week].to_i*7).day %>
-<% utc_zone_today = Time.utc(year, month, day).in_time_zone %>
+<% wday = DateTime.now.cwday %>
+<% year = DateTime.now.year %>
+<% month = DateTime.now.month %>
+<% day = DateTime.now.day %>
 <% if params[:week].present? %>
   <% i = params[:week].to_i * 7 %>
   <% today = DateTime.new(year, month, day).next_day(i) %>
 <% else %>
   <% today = DateTime.new(year, month, day) %>
 <% end %>
+<% utc_zone_today = Time.utc(today.year, today.month, today.day).in_time_zone %>
 <% day_rents =  rents.group_by(&:day) %>
 <div id="edit-table">
       <nav class="tcenter">
@@ -78,54 +78,3 @@
   </table>
 </div>
 
-  <script>
-  window.controllpane=false
-
-
-  $(document).on({
-    mouseenter: function(){
-      if($(this).data('serial')){
-        $('.' + $(this).data('serial') ).css('background-color', '#CCCCCC')
-      }else{
-        $(this).css('background-color', '#CCCCCC')
-      }
-    },
-    mouseleave: function(){
-      if($(this).data('serial')){
-        $('.' + $(this).data('serial')).each(function(i,v){
-          if($(v).data('review')=='review'){
-            $(v).css('background-color', '#FFAAAA')
-          }else if($(v).data('rent')=='multireview'){
-            $(v).css('background-color','#FFCCAA')
-          }else if($(v).data('review')==true){
-            $(v).css('background-color','#AAFFAA')
-          }else{
-            $(v).css('background-color','#FFFFFF')
-          }
-        })
-      }else{
-        if($(this).data('review')==true){
-          $(this).css('background-color','#AAFFAA')
-        }else if($(this).data('review')=='review'){
-          $(this).css('background-color','#FFAAAA')
-        }else if($(this).data('rent')=='multireview'){
-          $(this).css('background-color', '#FFCCAA')
-        }else{
-          $(this).css('background-color', '#FFFFFF')
-        }
-      }
-    },
-    click: function(){
-      if($('#controllpane').css('display')=='none'){
-        $('#rentcontroll')[0].click()
-      }
-      $('#controllpane').html('<h5>讀取中</h5>')
-      $.ajax({
-        url: '/facilities/'+"<%=raw params[:id].to_s %>"+'/rent/' + $(this).data('id'),
-        data: { type : 'controll' },
-        success: function(res){$('#controllpane').html(res)}
-      })
-    }
-  }, ".clickcelledit")
-
-</script>

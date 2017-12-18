@@ -388,6 +388,7 @@ $(document).on('turbolinks:load', function(){
       $.ajax(id + "/table", {success: function(response){
         $('#weekTable').html(response);
         if(window.cartarr[window.week+55]!=null){
+          $(document).on('turbolinks:load', ready)
           $(document).ready()
           window.cartarr[window.week+55].forEach(function(e){$('#'+e).css('background-color','#AAAAFF')})
         }

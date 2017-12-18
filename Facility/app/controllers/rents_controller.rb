@@ -1,7 +1,6 @@
 class RentsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  layout false ,only: [:info]
-  layout false ,only: [:controllpane]
+  layout false ,only: [:update, :controllpane, :info]
   def new
     if params[:largerent]
       facility = Facility.find_by(id: params[:id])
@@ -31,7 +30,7 @@ class RentsController < ApplicationController
       end
       puts
       puts '---------------------------------------------------'
-      for i in  params[:period].to_i..(params[:period].to_i+params[:cartrent].to_i)
+      for i in  params[:period].to_i..(params[:period].to_i+params[:cartrent].to_i-1)
         times.push(i.to_s(16))
       end
       if facility.rents.where(day: days, period: times).length == 0
@@ -47,8 +46,12 @@ class RentsController < ApplicationController
         redirect_to "/facilities/#{params[:id]}?next_week=#{next_week}", notice: 'repeat'
         return
       end
-    elsif params[:cartrent].present?
-      serial = "%d" % (Time.now.to_f*10000)
+    elsif params[:cartrent]
+      if params[:cartrent].to_i > 1
+        serial = "%d" % (Time.now.to_f*10000)
+      else
+        serial = '000000'
+      end
       facility = Facility.find_by(id: params[:id])
       rents = Facility.find_by(id: params[:id]).rents
       date = params[:day]
@@ -110,12 +113,11 @@ class RentsController < ApplicationController
   end
 
   def update
-    if params["permit"].present?
+    if params["permit"]
       return if Facility.find_by(id: params[:id]).users.where(portal_id: current_user).nil?
-      if params["cart_serial"]=='000000'
+      if params["serial"]=='000000'
         rent = Facility.find_by(id: params[:id]).rents.find_by(id: params["rent_id"])
-        rent.verified = true
-        rent.save
+        rent.update(verified: true)
       else
         if params['serial']!='000000'
           Facility.find_by(id: params[:id]).rents.where(cart_serial: params["serial"]).update(verified: true)
