@@ -3,6 +3,7 @@ class RentsController < ApplicationController
   layout false ,only: [:update, :controllpane, :info]
   def new
     if params[:largerent]
+      week_serial = "%d" % (Time.now.to_f*10000)
       facility = Facility.find_by(id: params[:id])
       rents = Facility.find_by(id: params[:id]).rents
       date = params[:day]
@@ -12,6 +13,7 @@ class RentsController < ApplicationController
       next_week = ((day.to_time - now.to_time)/1.day).to_i / 7
       if params[:cartrent].to_i > 1
         serial = "%d" % (Time.now.to_f*10000)
+        serial += "0" if serial == week_serial
         cart_verify_or_not = true
       else
         serial = '000000'
@@ -19,8 +21,6 @@ class RentsController < ApplicationController
       end
       days = []
       times = []
-      puts '---------------------------------------------------'
-      puts
       for k in 1..params[:weekly].to_i
         puts '------------------------'
         puts week_offset = (k-1)*7
@@ -28,15 +28,13 @@ class RentsController < ApplicationController
         puts '------------------------'
         days.push(day  + week_offset.day)
       end
-      puts
-      puts '---------------------------------------------------'
       for i in  params[:period].to_i..(params[:period].to_i+params[:cartrent].to_i-1)
         times.push(i.to_s(16))
       end
       if facility.rents.where(day: days, period: times).length == 0
         days.each do |the_day|
           times.each do |time|
-            facility.rents.create(user_id: current_user,day: the_day, period: time, cart_serial: serial, cart: cart_verify_or_not)
+            facility.rents.create(week_serial: week_serial, user_id: current_user,day: the_day, period: time, cart_serial: serial, cart: cart_verify_or_not)
           end
           serial = (serial.to_d + 1).to_s.chop.chop if serial != '000000'
         end
@@ -120,7 +118,11 @@ class RentsController < ApplicationController
         rent.update(verified: true)
       else
         if params['serial']!='000000'
-          Facility.find_by(id: params[:id]).rents.where(cart_serial: params["serial"]).update(verified: true)
+          if params['weeks_admin']
+            Facility.find_by(id: params[:id]).rents.where(week_serial: params['serial']).update(verified: true)
+          else
+            Facility.find_by(id: params[:id]).rents.where(cart_serial: params["serial"]).update(verified: true)
+          end
         else
           Facility.find_by(id: params[:id]).rents.where(id: params["single_id"])
         end
@@ -145,9 +147,16 @@ class RentsController < ApplicationController
 
   def destroy
     if params[:serial]!='000000'
-      rents = Facility.find_by(id: params[:id]).rents.where(cart_serial: params[:serial])
-      rents.each do |r|
-        r.destroy
+      if params['weeks_admin']
+        rents = Facility.find_by(id: params[:id]).rents.where(week_serial: params[:serial])
+        rents.each do |r|
+          r.destroy
+        end
+      else
+        rents = Facility.find_by(id: params[:id]).rents.where(cart_serial: params[:serial])
+        rents.each do |r|
+          r.destroy
+        end
       end
     elsif params[:serial]=='000000'
       Facility.find_by(id: params[:id]).rents.find_by(id: params[:single_id]).destroy
@@ -170,4 +179,19 @@ class RentsController < ApplicationController
   def controllpane
   end
 
+  def queue
+    return if current_user.nil?
+    facility = Facility.find_by(id: params[:id])
+    if facility.membership
+      return if facility.allow_users.find_by(portal_id: current_user).nil?
+    end
+    if facility.verify
+      rent = facility.rents.find_by(day: DateTime.strptime(params[:day], "%Y/%m/%d"), period: params[:period].to_i(16))
+      if rent.present?
+        if !rent.verified
+          facility.rents.create(day: DateTime.strptime(params[:day], "%Y/%m/%d"), period: params[:period].to_i(16), description: params[:description], user_id: current_user)
+        end
+      end
+    end
+  end
 end

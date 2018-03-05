@@ -318,9 +318,10 @@ window.week=0
 $(document).on({click : function(){
   window.pane_serial = $(this).data('serial')
   window.singleId = $(this).data('rentid')
+  window.week_serial_is = $(this).data('weeks')
   $.ajax({url : '<%=raw request.original_url%>' + "/" + window.admin_id +  "/rent/" + window.edit_id,
           method : 'DELETE',
-          data : {count : window.operate, serial : window.pane_serial, single_id : window.rentId},
+          data : {count : window.operate, serial : window.pane_serial, single_id : window.rentId, weeks_admin : window.week_serial_is},
           success: function(){
             $.ajax({url: 'facilities/'+ window.admin_id +'/edit/table?week='+ window.week,
                     success: function(r){
@@ -337,10 +338,11 @@ $(document).on({
   click : function(){
     window.pane_serial = $(this).data('serial')
     window.singleId = $(this).data('rentid')
+    window.week_serial_is = $(this).data('weeks')
     console.log(window.singleId)
     $.ajax({url : '<%=raw request.original_url%>' + "/" + window.admin_id +  "/rent/" + window.edit_id,
             method : 'PUT',
-            data : {serial : window.pane_serial,  single_id : window.singleId, permit : true},
+            data : {serial : window.pane_serial,  single_id : window.singleId, permit : true, weeks_admin : window.week_serial_is},
             success : function(){
             $.ajax({url: 'facilities/'+ window.admin_id +'/edit/table?week='+ window.week,
                       success : function(r){

@@ -8,7 +8,11 @@
 <% else %>
   <% periods = rent.period %>
 <% end %>
-<% day = rent.day %>
+<% if rent.week_serial != '000000' %>
+  <% day  = Rent.where(week_serial: rent.week_serial).group_by(&:day).keys %>
+<% else  %>
+  <% day = rent.day %>
+<% end %>
 <html>
   <head>
     <title>Facility</title>
@@ -46,7 +50,7 @@
     </tr>
     <tr style="height: 5%; width:100%;">
       <td class="four-column"><h4 class="cell-mid">申請日期/時段</h4></td>
-      <td class="four-column"><h4 class="cell-mid"><%=day.strftime("%Y-%m-%d\n") %><br><%= periods %></h4></td>
+      <td class="four-column"><h4 class="cell-mid"><% if day.kind_of?(Time) %> <%=day.strftime("%Y-%m-%d\n") %> <% else %> <% day.each do |d| %> <%= d.strftime("%Y-%m-%d") %> <br> <% end %>  <% end %>時段: <%= periods %></h4></td>
       <td class="four-column"><h4 class="cell-mid">提交日期</h4></td>
       <td class="four-column"><h4 class="cell-mid"><%= rent.created_at.strftime("%Y-%m-%d %H:%M:%S")%></h4></td>
     </tr>

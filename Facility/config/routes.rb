@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post '/facilities/mailverifyRequest' => "facilities#mail_verify_request"
   get 'facilities/search' => "facilities#search"
   put 'facilities/notification' => "facilities#notify_switch"
+  post '/facilities/:id/rent/queue' => "rents#queue"
   resources :facilities
 
   post '/facilities/:id/rent' => "rents#new"

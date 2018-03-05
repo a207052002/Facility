@@ -31,7 +31,7 @@
             <tr>
               <th><%=d.id%></th>
               <td><%=d.user_id%></td>
-              <td><%=d.created_at%></td>
+              <td><%=d.created_at.strftime("%Y-%m-%d %H:%M:%S")%></td>
             </tr>
           <% end %>
         </tbody>
@@ -78,14 +78,14 @@
             <tr>
               <th><%=d.id%></th>
               <td><%=d.user_id%></td>
-              <td><%=d.created_at%></td>
+              <td><%=d.created_at.strftime("%Y-%m-%d %H:%M:%S")%></td>
             </tr>
           <% end %>
         </tbody>
       </table>
       <div class="form-group">
         <label for="description">租用事由</label>
-        <textarea class="form-control" rows="5" id="description" name="description"></textarea>
+        <textarea class="form-control" rows="5" id="queue-description" name="description"></textarea>
       </div>
     </div>
     <% end %>

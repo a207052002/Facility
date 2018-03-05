@@ -1,4 +1,4 @@
-div class="container" style="padding-top: 25px;">
+<div class="container" style="padding-top: 25px;">
   <% pass = 'style="background-color: #DDFFDD"' %>
   <% review = 'style="background-color: #FFDDDD"' %>
   <% facility = Facility.find_by(id: params[:id]) %>
@@ -593,11 +593,19 @@ $(document).on('turbolinks:load', function(){
       }, data: theDate})
     }
   )
-  $(document).on('click', '#queue',
+  $(document).on('click', '#queue-btn',
     function(){
-      $.post(window.facilityId + '/rent', {day : $(this).data('day'), period : $(this).data('time'), description : ""}).done(function(){
-        alert('Submit successed')
-        location.reload()})
+      $.ajax({type: "POST",
+              url: window.facilityId + '/rent/queue',
+              data: {day : $(this).data('day'), period : $(this).data('time'), description : $('#queue-description').val()},
+              success: function(){
+                    alert('Submit successed')
+                    location.reload()
+              },
+              error: function(){
+                alert('Submit failed.')
+              }
+      })
     }
   )
 

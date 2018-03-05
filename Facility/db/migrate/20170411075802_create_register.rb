@@ -37,6 +37,7 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.boolean :notified, default: false
       t.boolean :saw, default: false
       t.string :cart_serial, default: "000000"
+      t.string :week_serial, default: "000000"
     end
 
     create_table :large_rent do |t|

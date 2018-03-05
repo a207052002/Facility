@@ -35,8 +35,23 @@
         <% if !(rents.where(day: the_rent.day, period: local_periods).any? {|r| r.verified}) %>
           <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-serial='<%=raw k %>' type="button" class="btn btn-primary admtable-permit">Permit</button></div></li>
         <% end %>
-      <% end %>
       <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>"  data-serial='<%=raw k %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
+        <% week_serial = v.first.week_serial %>
+        <% if(week_serial != "000000") %>
+          <% weeks_rent = rents.where(week_serial: week_serial)  %>
+          <li tabindex="-1" class="dropdown-submenu">
+          <a> 跨周管理</a>
+          <ul class="dropdown-menu">
+            從 <%= weeks_rent.first.day.strftime("%Y/%m/%d") %> 到 <%= weeks_rent.last.day.strftime("%Y/%m/%d") %> <br>同一個星期<br>
+            時段 <%= v.first.period %><%=('-' + v.last.period ) if v.last!=v.first %>
+          <% if !(rents.where(day: the_rent.day, period: local_periods).any? {|r| r.verified}) %>
+            <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-weeks="true" data-serial='<%=raw week_serial %>' type="button" class="btn btn-primary admtable-permit">Permit</button></div></li>
+          <% end %>
+        <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>" data-weeks="true"  data-serial='<%=raw week_serial %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
+          </ul>
+          </li>
+        <% end %>
+      <% end %>
     </ul>
 </li>
 <% end %>
