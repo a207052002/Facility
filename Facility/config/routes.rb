@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get '/facilities/print' => "facilities#appform"
   get '/facilities/mailverify' => "facilities#mail_verify"
   post '/facilities/mailverifyRequest' => "facilities#mail_verify_request"
   get 'facilities/search' => "facilities#search"

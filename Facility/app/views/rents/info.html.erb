@@ -46,7 +46,6 @@
     <% end %>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-info print-btn" id="print" data-day="<%=raw the_day.strftime("%Y/%m/%d")%>" data-time="<%=raw params[:time] %>" data-rid="<%=raw rents.find_by(user_id: current_user).id %>">列印申請表</button>
       <button type="sumbit" class="btn btn-default sub-des"  data-day="<%=raw the_day.strftime("%Y/%m/%d")%>" data-time="<%=raw params[:time] %>">更改事由</button>
       <button role="button" type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
     </div>
