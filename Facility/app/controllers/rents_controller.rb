@@ -28,7 +28,7 @@ class RentsController < ApplicationController
         puts '------------------------'
         days.push(day  + week_offset.day)
       end
-      for i in  params[:period].to_i..(params[:period].to_i+params[:cartrent].to_i-1)
+      for i in  params[:period].to_i(16)..(params[:period].to_i(16)+params[:cartrent].to_i-1)
         times.push(i.to_s(16))
       end
       if facility.rents.where(day: days, period: times).length == 0
@@ -73,7 +73,7 @@ class RentsController < ApplicationController
           end
         end
       end
-      for i in 1..params[:cartrent].to_i
+      for i in 1..params[:cartrent].to_i(16)
         rents.create(period: (params[:period].to_i(16)+i-1).to_s(16), day: day, description: params[:description], user_id: current_user, cart: true, cart_serial: serial)
       end
       redirect_to "/facilities/#{params[:id]}?next_week=" + next_week.to_s, notice: 'success'
