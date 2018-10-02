@@ -1,0 +1,16 @@
+development:
+  address: "smtp.cc.ncu.edu.tw"
+  port: 587
+  domain: "cc.ncu.edu.tw"
+  authentication: "plain"
+  user_name: ""
+  password: ""
+  enable_starttls_auto: true
+production:
+  address: "smtp.cc.ncu.edu.tw"
+  port: 587
+  domain: "cc.ncu.edu.tw"
+  authentication: "plain"
+  user_name: ""
+  password: ""
+  enable_starttls_auto: true

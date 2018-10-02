@@ -9,21 +9,27 @@ class FacilitiesController < ApplicationController
   def create
     verify = params[:verify] || false
     limit = params[:limit] || false
-
-    facility = User.find_by(portal_id: current_user).facilities.create(name: params[:name], description: params[:description], membership: limit, verify: verify, board: params[:board])
-    facility.allow_users.create(portal_id: current_user)
-    redirect_to '/facilities'
+    if(current_user != "F143610" && current_user != "A375754" && current_user != "105502047")
+      redirect_to '/facilities', notice: 'forbidden'
+      return
+    elsif
+      facility = User.find_by(portal_id: current_user).facilities.create(name: params[:name], description: params[:description], membership: limit, verify: verify, board: params[:board])
+      facility.allow_users.create(portal_id: current_user)
+      redirect_to '/facilities'
+    end
   end
 
   def new
   end
 
   def edit
+    not_found if Facility.find_by(id: params[:id]).nil?
   end
 
   def show
+    not_found if Facility.find_by(id: params[:id]).nil?
     if current_user.nil?
-      redirect_to '/facilities', notice: 'unlogin'
+#      redirect_to '/facilities', notice: 'unlogin'
     else
       if (facility = Facility.find_by(id: params[:id])).membership
         redirect_to '/facilities', notice: 'limit' if facility.allow_users.find_by(portal_id: current_user).nil?
@@ -32,6 +38,7 @@ class FacilitiesController < ApplicationController
   end
 
   def update
+    not_found if Facility.find_by(id: params[:id]).nil?
     if params['change']=='board'
       Facility.find_by(id: params[:id]).update(board: params['board'])
       redirect_to '/facilities', notice: 'board'
@@ -48,6 +55,7 @@ class FacilitiesController < ApplicationController
   end
 
   def more_edit
+    not_found if Facility.find_by(id: params[:id]).nil?
     owner = (facility=Facility.find_by(id: params[:id])).users.find_by(portal_id: current_user)
     if(owner.present? && params[:content].present?)
       if params[:more]=='admin' && facility.users.find_by(portal_id: params[:content]).nil?
@@ -66,13 +74,16 @@ class FacilitiesController < ApplicationController
   end
 
   def more_delete
+    not_found if Facility.find_by(id: params[:id]).nil?
     owner = (facility=Facility.find_by(id: params[:id])).users.find_by(portal_id: current_user)
     if(owner.present? && params[:content].present?)
       if params[:more]=='admin'
         the_user = facility.users.find_by(portal_id: params[:content])
+	return if the_user.portal_id == current_user
         the_user.destroy if the_user.present?
       elsif params[:more]=='member'
         the_member = facility.allow_users.find_by(portal_id: params[:content])
+	return if the_member.portal_id == current_user
         the_member.destroy if the_member.present?
       end
     end
@@ -88,6 +99,7 @@ class FacilitiesController < ApplicationController
   end
 
   def edit_table
+    not_found if Facility.find_by(id: params[:id]).nil?
     rents = Facility.find_by(id: params[:id]).rents.where(saw: false)
     rents.update(saw: true) if rents.present?
   end
@@ -118,6 +130,12 @@ class FacilitiesController < ApplicationController
     if user.mail.present?
       user.notify = !user.notify
       user.save!
+    end
+  end
+  def tel_set
+    user = User.find_by(portal_id: current_user)
+    if user.present?
+      user.update(tel: params[:tel])
     end
   end
 

@@ -169,11 +169,6 @@ $(document).on('turbolinks:load', function(){
   </script>
 <% end %>
 
-<% if flash[:notice] == 'unlogin' %>
-  <script>
-    alert('Please login first.　請先登入')
-  </script>
-<% end %>
 
 <% if flash[:notice] == 'limit' %>
   <script>
@@ -204,7 +199,11 @@ $(document).on('turbolinks:load', function(){
   </script>
 <% end %>
 
-
+<% if flash[:notice] == 'forbidden' %>
+  <script>
+    alert("禁止指定非管理人員新增設施")
+  </script>
+<% end %>
   <script>
 $(document).on("turbolinks:load", function(){
 
@@ -355,6 +354,26 @@ $(document).on({
   }
 }, '.admtable-permit')
 
+$(document).on({
+  click : function(){
+    window.pane_serial = $(this).data('serial')
+    window.singleId = $(this).data('rentid')
+    window.week_serial_is = $(this).data('weeks')
+    console.log(window.singleId)
+    $.ajax({url : '<%=raw request.original_url%>' + "/" + window.admin_id +  "/rent/cancel/" + window.edit_id,
+            method : 'PUT',
+            data : {serial : window.pane_serial,  single_id : window.singleId, permit : true, weeks_admin : window.week_serial_is},
+            success : function(){
+            $.ajax({url: 'facilities/'+ window.admin_id +'/edit/table?week='+ window.week,
+                      success : function(r){
+                        $('#displayByTable').html(r).promise().done(function(){
+                        })
+                      },
+                      error : function(){alert('Cancel response error.')} })
+            },
+            error : function(){alert('Permit failed.')}})
+  }
+}, '.admtable-cancel')
 </script>
 <script>
   window.controllpane=false

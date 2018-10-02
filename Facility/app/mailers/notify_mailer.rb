@@ -13,7 +13,7 @@ class NotifyMailer < ApplicationMailer
   def notify_rent(facility, count)
     @count = count
     @name = facility.name
-    @url = "https://ncuregi.webapp.cc.ncu.edu.tw/facilities"
+    @url = "https://loan.webapp.cc.ncu.edu.tw/facilities"
     users = facility.users.where(notify: true)
     users = users.map(&:mail) if users.present?
     mail(to: users, subject: "New Rent! in #{@name}")
@@ -31,7 +31,7 @@ class NotifyMailer < ApplicationMailer
       else
         Mailverify.create(token: token, mail: mail, portal_id: current_user)
       end
-      @url = "https://ncuregi.webapp.cc.ncu.edu.tw/facilities/mailverify?token=#{token}"
+      @url = "https://loan.webapp.cc.ncu.edu.tw/facilities/mailverify?token=#{token}"
       mail(to: mail, subject: "NCU register mail 認證郵件")
     end
   end

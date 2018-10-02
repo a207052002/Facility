@@ -12,10 +12,11 @@
   <% periods.push the_rent.period %>
 <% end %>
 
+
 <% all_rents = rents.where(period: periods, day: the_rent.day).group_by(&:cart_serial)%>
 <% all_rents.each do |k, v| %>
   <% v.sort_by! {|r| r[:period].to_i} %>
-<li class="dropdown-submenu">
+ <li class="dropdown-submenu">
     <a tabindex="-1">
       Period: <%= v.first.period %><%=('-' + v.last.period ) if v.last!=v.first %>
       User_id: <%= v.first.user_id%>
@@ -27,18 +28,31 @@
           <%= v.first.description %>
         </ul>
       </li>
-      <% if facility.verify && !v.first.verified%>
+      <% user = User.find_by(portal_id: v.first.user_id) %>
+      <li tabindex="-1" class="dropdown-submenu">
+        <a>User info</a>
+        <ul class="dropdown-menu">
+	  mail: <% if user.mail.present? %> <%= user.mail %> <% else %> 尚未設定 <% end %>
+          <br>
+          phone: <% if user.tel.present? %> <%= user.tel %> <% else %> 尚未設定 <% end %>
+        </ul>
+      </li>
+      <% if facility.verify %>
         <% local_periods = [] %>
         <% v.each do |r| %>
           <% local_periods.push r.period %>
         <% end %>
+      <% if !v.first.verified %>
         <% if !(rents.where(day: the_rent.day, period: local_periods).any? {|r| r.verified}) %>
           <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-serial='<%=raw k %>' type="button" class="btn btn-primary admtable-permit">Permit</button></div></li>
+          <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>"  data-serial='<%=raw k %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
         <% end %>
-      <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>"  data-serial='<%=raw k %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
+      <% else %>
+          <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-serial='<%=raw k %>' type="button" class="btn btn-primary admtable-cancel">Cancel</button></div></li>
+      <% end %>
         <% week_serial = v.first.week_serial %>
         <% if(week_serial != "000000") %>
-          <% weeks_rent = rents.where(week_serial: week_serial)  %>
+          <% weeks_rent = rents.where(week_serial: week_serial) %>
           <li tabindex="-1" class="dropdown-submenu">
           <a> 跨周管理</a>
           <ul class="dropdown-menu">
@@ -46,8 +60,10 @@
             時段 <%= v.first.period %><%=('-' + v.last.period ) if v.last!=v.first %>
           <% if !(rents.where(day: the_rent.day, period: local_periods).any? {|r| r.verified}) %>
             <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-weeks="true" data-serial='<%=raw week_serial %>' type="button" class="btn btn-primary admtable-permit">Permit</button></div></li>
+            <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>" data-weeks="true"  data-serial='<%=raw week_serial %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
+          <% else %>
+            <li><div class="container-fluid"><button data-rentid="<%=raw v.first.id %>" data-weeks="true" data-serial='<%=raw week_serial %>' type="button" class="btn btn-primary admtable-cancel">All cancel</button></div></li>
           <% end %>
-        <li><div class="container-fluid"><button  data-rentid="<%=raw v.first.id %>" data-weeks="true"  data-serial='<%=raw week_serial %>' type="button" class="btn btn-warning table-delete">Delete</button></div></li>
           </ul>
           </li>
         <% end %>

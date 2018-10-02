@@ -6,6 +6,7 @@ class CreateRegister < ActiveRecord::Migration[5.0]
       t.boolean :membership , default: false, null: false
       t.boolean :verify, default: false, null: false
       t.string :board
+      t.integer :limit, default:190, null: false
     end
 
     create_table :allow_users do |t|
@@ -21,10 +22,12 @@ class CreateRegister < ActiveRecord::Migration[5.0]
     create_table :users do |t|
       t.string :portal_id  ,  null: false
       t.string :mail, default: ""
+      t.string :tel, default: ""
       t.boolean :notify, default: true
     end
 
     create_table :rents do |t|
+      t.string :course  ,  null: false
       t.string :period  ,  null: false
       t.datetime :day  ,  null: false
       t.datetime :created_at

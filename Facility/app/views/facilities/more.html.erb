@@ -1,5 +1,9 @@
 <% facility = Facility.find_by(id: params[:id])%>
 
+<script>
+  window.current = "<%=raw current_user %>"
+</script>
+
 <div class="tab-content" style="padding-top: 50px;">
 
   <div class="tab-pane fade in active" id="addAdm">
@@ -74,18 +78,22 @@ $(document).on('turbolinks:load', function(){
 
   $(document).on('click', '.self-delete', function(){
     var bar = $(this).parent()
-    $.ajax({
-      type: "DELETE",
-      url: "/facilities/" +<%=raw "'"+ params[:id] +"'" %>+"/edit/more?authenticity_token="+$('meta[name=csrf-token]').attr('content') + "&content=" + bar.data('sid') + "&more=" + bar.data('model'),
-      success: function(){
-        bar.fadeOut().promise().done(function(){
-          bar.remove()
-        })
-      },
-      error: function(){
-        alert('Internet error.')
-      }
-    })
+    if(bar.data('sid') == window.current){
+      alert("請不要刪除自己的權限")
+    } else {
+      $.ajax({
+        type: "DELETE",
+        url: "/facilities/" +<%=raw "'"+ params[:id] +"'" %>+"/edit/more?authenticity_token="+$('meta[name=csrf-token]').attr('content') + "&content=" + bar.data('sid') + "&more=" + bar.data('model'),
+        success: function(){
+          bar.fadeOut().promise().done(function(){
+            bar.remove()
+          })
+        },
+        error: function(){
+          alert('Internet error.')
+        }
+      })
+    }
   })
 
 

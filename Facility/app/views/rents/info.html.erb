@@ -1,7 +1,7 @@
 <% facility = Facility.find_by(id: params[:id]) %>
 <% reg = /^(.*)\/(.*)\/(.*)/ %>
 <% the_day = DateTime.new(params[:day][reg,1].to_i, params[:day][reg,2].to_i, params[:day][reg,3].to_i) %>
-<% rents = facility.rents.where(day: the_day, period: params[:time].to_i)  %>
+<% rents = facility.rents.where(day: the_day, period: params[:time].to_i.to_s(16))  %>
 
 <% if rents.where(user_id: current_user).present? %>
 
@@ -24,6 +24,7 @@
             <th>申請編號</th>
             <th>申請人</th>
             <th>申請時間</th>
+	    <th>課程名稱</th>
           </tr>
         </thead>
         <tbody>
@@ -32,6 +33,7 @@
               <th><%=d.id%></th>
               <td><%=d.user_id%></td>
               <td><%=d.created_at.strftime("%Y-%m-%d %H:%M:%S")%></td>
+	      <td><<%=d.course%>/td>
             </tr>
           <% end %>
         </tbody>
@@ -46,6 +48,7 @@
     <% end %>
     </div>
     <div class="modal-footer">
+      <button type="button" class="btn btn-info print-btn" id="print" data-day="<%=raw the_day.strftime("%Y/%m/%d")%>" data-time="<%=raw params[:time] %>" data-rid="<%=raw rents.find_by(user_id: current_user).id %>">列印申請表</button>
       <button type="sumbit" class="btn btn-default sub-des"  data-day="<%=raw the_day.strftime("%Y/%m/%d")%>" data-time="<%=raw params[:time] %>">更改事由</button>
       <button role="button" type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
     </div>
@@ -70,6 +73,7 @@
             <th>申請編號</th>
             <th>申請人</th>
             <th>申請時間</th>
+	    <th>課程名稱</th>
           </tr>
         </thead>
         <tbody>
@@ -78,10 +82,15 @@
               <th><%=d.id%></th>
               <td><%=d.user_id%></td>
               <td><%=d.created_at.strftime("%Y-%m-%d %H:%M:%S")%></td>
+	      <td><%=d.course%></td>
             </tr>
           <% end %>
         </tbody>
       </table>
+      <div class="form-group">
+        <label for="course">課程名稱</label>
+        <textarea class="form-control" rows="1" id="queue-course" name="course"></textarea>
+      </div>
       <div class="form-group">
         <label for="description">租用事由</label>
         <textarea class="form-control" rows="5" id="queue-description" name="description"></textarea>

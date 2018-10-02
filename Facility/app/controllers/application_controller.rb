@@ -4,5 +4,8 @@ class ApplicationController < ActionController::Base
   def current_user
     @session = session[:user_id]
   end
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
   include ApplicationHelper
 end

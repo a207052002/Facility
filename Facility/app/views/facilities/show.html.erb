@@ -3,8 +3,17 @@
   <% review = 'style="background-color: #FFDDDD"' %>
   <% facility = Facility.find_by(id: params[:id]) %>
   <% facility_verify = facility.verify %>
+  <% the_year = DateTime.now.year %>
   <p><h1><%= facility.name %></h1><h4>&nbsp;&nbsp;<%= facility.description %></h4></p>
   <div class="container" style="display: inline-block;">
+    <div style="display: inline-block;">
+     <label>年</label>
+     <select class="form-control" id="findYear" name="findYear">
+	<% for i in 0..3 %>
+         <option id="<%=raw the_year-2+i %>"><%= the_year-2+i %></option>
+ 	<% end  %>
+      </select>
+    </div>
     <div style="display: inline-block;">
       <label>月</label>
       <select class="form-control" id="findMonth" name="findMonth">
@@ -22,6 +31,7 @@
       </select>
     </div>
     <button id="findTable" class="btn btn-secondary" style="display: inline-block;" >顯示該日之周</button>
+    <button id="findToday" class="btn btn-secondary" onClick="javascript:window.location.reload()" style="display: inline-block;" >顯示本週</button>
   </div>
   <hr>
   <div class="container row">
@@ -74,7 +84,7 @@
             <% k = j.to_s%>
             <% hex = j.to_s(16) %>
             <tr>
-              <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
+              <th style="text-align:center;"><%= "%d:00~%d:00" % [j+7, j+8]%></th>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
                 <% if (day1 = facility.rents.where(day: d1, period: hex)).present?%>
                   <% if facility.rents.find_by(day: d1, period: hex, verified: true).nil? && facility_verify%>
@@ -86,9 +96,9 @@
                 id="<%= d1.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day1.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day1.first.user_id if day1.first.present? %>
+                  <%= day1.first.course if day1.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==2%>" data-wday="<%=d2.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -102,9 +112,9 @@
                 id="<%= d2.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day2.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day2.first.user_id if day2.first.present? %>
+                  <%= day2.first.course if day2.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==3%>" data-wday="<%=d3.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -118,9 +128,9 @@
                 id="<%= d3.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day3.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day3.first.user_id if day3.first.present? %>
+                  <%= day3.first.course if day3.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==4%>" data-wday="<%=d4.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -134,9 +144,9 @@
                 id="<%= d4.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day4.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day4.first.user_id if day4.first.present? %>
+                  <%= day4.first.course if day4.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==5%>" data-wday="<%=d5.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -150,9 +160,9 @@
                 id="<%= d5.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day5.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day5.first.user_id if day5.first.present? %>
+                  <%= day5.first.course if day5.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==6%>" data-wday="<%=d6.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -166,9 +176,9 @@
                 id="<%= d6.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day6.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day6.first.user_id if day6.first.present? %>
+                  <%= day6.first.course if day6.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==7%>" data-wday="<%=d7.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -182,9 +192,9 @@
                 id="<%= d7.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day7.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day7.first.user_id if day7.first.present? %>
+                  <%= day7.first.course if day7.first.present? %>
                 <% end %>
               </td>
             </tr>
@@ -217,6 +227,8 @@
             </select>
           </div>
           <div class="form-group">
+            <label for="course">課程名稱(必填)</label>
+            <textarea class="form-control" placeholder="使用的名義與課程名稱.." type="text" name="course" rows="1" id="course"></textarea>
             <label for="des">申請事由</label>
             <textarea class="form-control" placeholder="Simple description about usage..." type="text" name="description" rows="5" id="des"></textarea>
           </div>
@@ -238,7 +250,7 @@
             </select>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">關閉</button>
+            <button type="button" class="btn <F5><F5>btn-default" data-dismiss="modal">關閉</button>
             <button type="submit" class="btn btn-primary">提交</button>
           </div>
         <% end %>
@@ -333,8 +345,10 @@
         <div id="incartlist" style="overflow: auto; height:50vh;">
         </div>
         <div class="form-group">
-          <label>Despriction</label>
-          <textarea class="form-control" rows="6" name="description">""</textarea>
+	  <label>Course</label>
+	  <textarea class="form-control" rows="1" name="course"></textarea>
+          <label>Description</label>
+	  <textarea class="form-control" rows="6" name="description"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -375,22 +389,27 @@ window.cart = false
 window.currentLogin = <%=raw login %>
 window.globalVar="null"
 window.facilityId = <%=raw params[:id] %>
-window.week = <%=raw params[:next_week]%>
+window.week = <%=raw (params[:next_week] if params[:next_week]!="" ) || "0" %>
 window.cartarr=[]
 var stime = "null"
 $(document).on('turbolinks:load', function(){
   $('#findTable').click(
-    function(){
+  function(){
+      window.week = 0
+      var year = $("#findYear").val();
       var month = $("#findMonth").val();
       var day = $("#findDay").val();
-      var theDate = {month: month, day: day};
+      var theDate = {month: month, day: day, year: year};
       var id = window.facilityId;
+      var now_day = new Date()
+      var that_day = new Date(parseInt(year), parseInt(month)-1 ,parseInt(day))
+      var rweeks =( that_day - now_day )/ 86400000 /7
+      window.week = parseInt(rweeks)
       $.ajax(id + "/table", {success: function(response){
         $('#weekTable').html(response);
         if(window.cartarr[window.week+55]!=null){
           $(document).on('turbolinks:load', ready)
-          $(document).ready()
-          window.cartarr[window.week+55].forEach(function(e){$('#'+e).css('background-color','#AAAAFF')})
+	  $(document).ready()
         }
       }, data: theDate})
     }
@@ -452,6 +471,7 @@ $(document).on('turbolinks:load', function(){
   },'.clickcell');
 
   //no negative index, so plus 55
+<% if current_user.present? %>
   $(document).on('click', '.clickcell',
     function() {
       if(window.cart){
@@ -469,9 +489,7 @@ $(document).on('turbolinks:load', function(){
           }else{
             $(this).css('background-color', '#FFFFFF')
           }
-          console.log(window.cartarr[window.week+55][index] )
           window.cartarr[window.week+55].splice(index,1)
-          console.log(window.cartarr[window.week+55][index] )
         }else{
           if($(this).data('rented')!=true){
             $(this).css('background-color', "#AAAAFF")
@@ -530,11 +548,14 @@ $(document).on('turbolinks:load', function(){
         }
       }
     });
-
+<% else%>
+  alert("請先登入")
+<% end %>
   <% if params[:notice].nil?%>
       $('#board').modal('show')
   <% end %>
   $(document).on('click', '.cartbtn', function(){
+    <% if current_user.present? %>
     window.cart = !window.cart
     if(window.cart){
       $('#cartsubmit').fadeIn('500')
@@ -551,6 +572,9 @@ $(document).on('turbolinks:load', function(){
         window.cartarr.forEach(function(e){e.forEach(function(cell){$('#'+cell).css('background-color','transparent')})})
       }).promise().done(function(){window.cartarr=[]})
     }
+    <% else %>
+     alert("請先登入")
+    <% end %>
   })
 
   $(document).on('click', '.next',
@@ -597,7 +621,7 @@ $(document).on('turbolinks:load', function(){
     function(){
       $.ajax({type: "POST",
               url: window.facilityId + '/rent/queue',
-              data: {day : $(this).data('day'), period : $(this).data('time'), description : $('#queue-description').val()},
+              data: {course: $('#queue-course').val(), day : $(this).data('day'), period : $(this).data('time'), description : $('#queue-description').val()},
               success: function(){
                     alert('Submit successed')
                     location.reload()
@@ -637,15 +661,24 @@ $(document).on('turbolinks:load', function(){
   })
 
 })
-  <% if(params[:notice] == 'failed') %>
+</script>
+
+  <% if(flash[:notice] == 'failed') %>
     <script>
-      function(){alert("Please don't fuck me")}()
+      (function(){alert("Please don't fuck me")})()
+    </script>
+  <% end %>
+  <% if(flash[:notice] == 'course_is_empty') %>
+    <script>
+      (function(){alert("提交失敗，課程名稱不得為空")})()
     </script>
   <% end %>
 
-
-</script>
-
+  <% if(flash[:notice] == 'out_of_limit') %>
+    <script>
+      (function(){alert("超過提交範圍")})()
+    </script>
+  <% end %>
 
 
 

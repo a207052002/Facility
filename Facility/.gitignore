@@ -25,3 +25,6 @@
 .gitignore
 *.yml
 /shared/
+
+#Ignore compiled assest
+/public/*

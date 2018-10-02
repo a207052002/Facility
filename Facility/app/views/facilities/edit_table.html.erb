@@ -47,7 +47,7 @@
     <tbody>
       <% for p in 1..15 %>
         <tr>
-          <th style="text-align:center;"><%= p.to_s(16).upcase%></th>
+          <th style="text-align:center;"><%="%02d:00~%02d:00" % [p+7, p+8]%></th>
           <% for w in 1..7 %>
             <% r=nil %>
             <% serial = nil %>
@@ -61,11 +61,11 @@
             <% if r.present? %>
             <% if (reviewed = (r.select{|r| r.verified})).present? %>
               <td data-id="<%=raw reviewed.first.id%>" class="clickcelledit <%=raw reviewed.first.cart_serial%>" <%=raw 'data-serial='+'"'+reviewed.first.cart_serial+'"'%>  data-editday="<%=raw (the_day = today.next_day(w-wday)) %>" style="background-color: #AAFFAA" data-review="true"  data-toggle="dropdown" type="button" data-target=".dropnav" >
-                <%= reviewed.first.user_id %>
+                <%= reviewed.first.course %>
               </td>
             <% else %>
               <td data-id="<%=raw r.first.id if r.present?%>" class="<%if r.present? %>clickcelledit <%=raw serial%> <% end %>" <%=raw 'data-serial='+'"'+serial+'"' if serial.present?%>  data-editday="<%=raw (the_day = today.next_day(w-wday)) %>" <% if r.present? %> <% if r.first.verified || !facility.verify %> style="background-color: #AAFFAA" data-review="true" <% else %> <% if r.size == 1 %>style="background-color: #EEAAAA" data-review="review" <% else %> style="background-color: #FFCCAA" data-rent="multireview" <%end %>   <% end %> <% end %> data-toggle="dropdown" type="button" data-target=".dropnav">
-                <%= r.first.user_id if r.present?%>
+                <%= r.first.course if r.present?%>
             </td>
             <% end %>
             <% else %>

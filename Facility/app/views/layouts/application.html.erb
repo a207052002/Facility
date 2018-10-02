@@ -38,7 +38,7 @@
     <nav id="navscroll" class="navbar navbar-toggleable navbar-inverse bg-inverse navbar-fixed-top" style="background-color:#333333; height:70px;" >
       <div class="container">
           <ul class="navbar-nav">
-          <a class="navbar-link navbar-btn navbar-left" href="/facilities" style="font-weight:750; font-size:35px; color:#FFFFFF">NCU Register</a>
+          <a class="navbar-link navbar-btn navbar-left" href="/facilities" style="font-weight:750; font-size:35px; color:#FFFFFF">NCUCC Register</a>
           </ul>
         <% if content_for? :index %>
           <%= yield :index %>
@@ -60,14 +60,25 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title">通知設定</h4>
+        <h4 class="modal-title">個人與通知設定</h4>
       </div>
       <div class="modal-body">
         <label>點擊開關通知功能</label>
         <button data-status=<% if the_user.notify%> "true" <% else %> "false" <% end %> class="btn notify-switch<% if !the_user.notify %> btn-info <% else %> btn-warnning <% end %> <%=raw 'disabled' if !the_user.mail.present? %> "><% if !the_user.notify %>通知關閉中<% else %>通知開啟中<%end %></button>
-        <p>這會讓您管理的設施有人申請租借時定時寄信至您的信箱, 必須設定並認證信箱才能使用</p>
+        <p>這會讓您管理的設施有人申請租借時定時寄信至您的信箱, 同時也是設施所有者的聯絡手段, 必須設定並認證信箱才能使用</p>
         <br>
         <br>
+        <p>您的聯絡電話: <% if the_user.tel.present? %> <%= the_user.tel %>  <% else %> 您尚未設定聯絡電話 <% end %></p>
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="tel">修改/新增 聯絡電話</label>
+            <input type="tel" class="form-control" id="tel"></input>
+            <button type="button" class="btn btn-default tel-set-btn">提交</button>
+          </div>
+        </form>
+	<p>部份設施會確保對象可聯絡才予以租借</p>
+	<br>
+	<br>
         <p>您的電子郵件地址: <% if the_user.mail.present? %> <%= the_user.mail %>  <% else %> 您尚未設定 e-mail <% end %></p>
         <form class="form-inline">
           <div class="form-group">
@@ -110,6 +121,21 @@ $(document).on("click", ".mail-verify-btn", function(){
     alert('不合法的郵件地址')
   }
 })
+
+
+$(document).on("click", ".tel-set-btn", function(){
+    $.post({url: '/facilities/telset',
+      data : {tel: $("#tel").val()},
+      success: function(){
+        alert('電話設定成功')
+        location.reload()
+      },
+      error: function(){
+        alert('伺服器發生錯誤')
+      }
+    })
+})
+
 
 $(document).on('click','.notify-switch' , function(){
   $(this).prop('disabled',true)

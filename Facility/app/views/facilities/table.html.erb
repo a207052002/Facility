@@ -8,7 +8,8 @@
     <% i = params[:week].to_i * 7 %>
     <% data_day = DateTime.new(year, month, day).next_day(i) %>
 <% else %>
-  <% data_day = DateTime.new(year, params[:month].to_i, params[:day].to_i) %>
+  <% data_day = DateTime.new(params[:year].to_i, params[:month].to_i, params[:day].to_i) %>
+  <% wday = data_day.cwday %>
   <% next_week_find = ((DateTime.now.to_time - data_day.to_time)/1.day).to_i / 7 %>
 <% end %>
 <% i = 0 %>
@@ -40,7 +41,7 @@
           <% for j in 1..15 %>
             <% k = j.to_s%>
             <tr>
-              <th style="text-align:center;"><%= j.to_s(16).upcase %></th>
+              <th style="text-align:center;"><%= "%02d:00~%02d:00" % [j+7,j+8] %></th>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==1%>" data-wday="<%=d1.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
                 <% if (day1 = facility.rents.where(day: d1, period: j.to_s(16))).present?%>
                   <% if facility.rents.find_by(day: d1, period: j.to_s(16), verified: true).nil? && facility_verify%>
@@ -52,9 +53,9 @@
                 id="<%= d1.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day1.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day1.first.user_id if day1.first.present? %>
+                  <%= day1.first.course if day1.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==2%>" data-wday="<%=d2.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -68,9 +69,9 @@
                 id="<%= d2.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day2.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day2.first.user_id if day2.first.present? %>
+                  <%= day2.first.course if day2.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==3%>" data-wday="<%=d3.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -84,9 +85,9 @@
                 id="<%= d3.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day3.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day3.first.user_id if day3.first.present? %>
+                  <%= day3.first.course if day3.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==4%>" data-wday="<%=d4.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -100,9 +101,9 @@
                 id="<%= d4.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day4.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day4.first.user_id if day4.first.present? %>
+                  <%= day4.first.course if day4.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==5%>" data-wday="<%=d5.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -116,9 +117,9 @@
                 id="<%= d5.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day5.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day5.first.user_id if day5.first.present? %>
+                  <%= day5.first.course if day5.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==6%>" data-wday="<%=d6.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -132,9 +133,9 @@
                 id="<%= d6.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day6.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day6.first.user_id if day6.first.present? %>
+                  <%= day6.first.course if day6.first.present? %>
                 <% end %>
               </td>
               <td class="clickcell open-Rent <%=raw'tablebg' if wday==7%>" data-wday="<%=d7.strftime("%Y/%m/%d")%>" data-time="<%=j%>"
@@ -148,9 +149,9 @@
                 id="<%= d7.strftime("%Y-%m-%d-")+j.to_s %>"
                 >
                 <% if (rent =day7.find_by(verified: true)).present? %>
-                  <%= rent.user_id %>
+                  <%= rent.course %>
                 <% else %>
-                  <%= day7.first.user_id if day7.first.present? %>
+                  <%= day7.first.course if day7.first.present? %>
                 <% end %>
               </td>
             </tr>

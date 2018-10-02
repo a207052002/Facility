@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20171015153235) do
     t.boolean "membership", default: false, null: false
     t.boolean "verify", default: false, null: false
     t.string "board"
+    t.integer "limit", default: 190, null: false
   end
 
   create_table "facilities_users", force: :cascade do |t|
@@ -58,6 +59,7 @@ ActiveRecord::Schema.define(version: 20171015153235) do
   end
 
   create_table "rents", force: :cascade do |t|
+    t.string "course", null: false
     t.string "period", null: false
     t.datetime "day", null: false
     t.datetime "created_at"
@@ -77,6 +79,7 @@ ActiveRecord::Schema.define(version: 20171015153235) do
   create_table "users", force: :cascade do |t|
     t.string "portal_id", null: false
     t.string "mail", default: ""
+    t.string "tel", default: ""
     t.boolean "notify", default: true
   end
 
